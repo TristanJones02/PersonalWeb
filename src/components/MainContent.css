@@ -37,6 +37,17 @@
   color: #ffffff;
 }
 
+.name-text {
+  white-space: nowrap;
+}
+
+/* On very small screens, allow wrapping if absolutely necessary */
+@media (max-width: 480px) {
+  .name-text {
+    white-space: normal;
+  }
+}
+
 .hero-subtitle {
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 600;

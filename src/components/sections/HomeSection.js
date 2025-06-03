@@ -8,7 +8,7 @@ const HomeSection = ({ handleResumeClick, handleEmailClick }) => {
       <div className="container">
         <div className="hero-content">
           <h1 className="hero-title">
-            <span className="gday-text">G'day</span>,<br className="mobile-break" /> I'm <span className="highlight">Tristan Jones</span>,
+            <span className="gday-text">G'day</span>,<br className="mobile-break" /> <span className="name-text">I'm <span className="highlight">Tristan Jones</span>,</span>
           </h1>
           <h2 className="hero-subtitle">
             An <span className="highlight">IT & Operations Manager</span>.
