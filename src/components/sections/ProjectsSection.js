@@ -1,7 +1,10 @@
 import React from 'react';
+import { useTheme } from '@mui/material/styles';
 import ArticleIcon from '@mui/icons-material/Article';
 
 const ProjectsSection = () => {
+  const theme = useTheme();
+  
   return (
     <section id="projects" className="content-section">
       <div className="container">
@@ -19,7 +22,7 @@ const ProjectsSection = () => {
             <ArticleIcon 
               style={{
                 fontSize: '4rem',
-                color: '#3b82f6',
+                color: theme.palette.primary.main,
                 marginBottom: '1.5rem'
               }}
             />

@@ -88,7 +88,7 @@
 }
 
 .email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #3b82f6 !important;
+  border-color: var(--primary-color) !important;
   border-width: 2px !important;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .email-dialogue-field .MuiTelInput-TextField .MuiInputLabel-root.Mui-focused {
-  color: #3b82f6 !important;
+  color: var(--primary-color) !important;
 }
 
 .email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-input {
@@ -128,7 +128,7 @@
 }
 
 .email-dialogue-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #3b82f6 !important;
+  border-color: var(--primary-color) !important;
   border-width: 2px !important;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .email-dialogue-field .MuiInputLabel-root.Mui-focused {
-  color: #3b82f6 !important;
+  color: var(--primary-color) !important;
 }
 
 .email-dialogue-field .MuiOutlinedInput-input {
@@ -179,7 +179,7 @@
 }
 
 .email-dialogue-send {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
   color: #ffffff !important;
   font-weight: 600 !important;
   padding: 0.75rem 2rem !important;

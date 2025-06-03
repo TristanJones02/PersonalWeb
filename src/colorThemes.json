@@ -1,0 +1,17 @@
+[
+  { "primary": "#1e40af", "secondary": "#4c1d95" },
+  { "primary": "#1e3a8a", "secondary": "#4338ca" },
+  { "primary": "#4338ca", "secondary": "#6d28d9" },
+  { "primary": "#6d28d9", "secondary": "#a21caf" },
+  { "primary": "#a21caf", "secondary": "#be185d" },
+  { "primary": "#be123c", "secondary": "#b91c1c" },
+  { "primary": "#b91c1c", "secondary": "#c2410c" },
+  { "primary": "#c2410c", "secondary": "#b45309" },
+  { "primary": "#b45309", "secondary": "#a16207" },
+  { "primary": "#a16207", "secondary": "#4d7c0f" },
+  { "primary": "#4d7c0f", "secondary": "#15803d" },
+  { "primary": "#15803d", "secondary": "#047857" },
+  { "primary": "#047857", "secondary": "#0f766e" },
+  { "primary": "#0f766e", "secondary": "#155e75" },
+  { "primary": "#155e75", "secondary": "#1e3a8a" }
+] 

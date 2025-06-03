@@ -1,34 +1,74 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Fab } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 import Sidebar from './components/Sidebar';
 import MainContent from './components/MainContent';
 import ScrollIndicator from './components/ScrollIndicator';
+import colorThemes from './colorThemes.json';
 import './App.css';
-
-// Create a dark theme for Material-UI
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#3b82f6',
-    },
-    secondary: {
-      main: '#8b5cf6',
-    },
-    background: {
-      default: '#0a0a0a',
-      paper: '#1a1a1a',
-    },
-  },
-});
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [dialogsOpen, setDialogsOpen] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState({ primary: '#3b82f6', secondary: '#8b5cf6' });
   const contentRef = useRef(null);
   const isScrollingRef = useRef(false);
+
+  // Create a dynamic theme based on current colors
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        main: currentTheme.primary,
+      },
+      secondary: {
+        main: currentTheme.secondary,
+      },
+      background: {
+        default: '#0a0a0a',
+        paper: '#1a1a1a',
+      },
+    },
+  });
+
+  // Set CSS custom properties for theme colors
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', currentTheme.primary);
+    root.style.setProperty('--secondary-color', currentTheme.secondary);
+    
+    // Convert hex to RGB for alpha variants
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    };
+    
+    const primaryRgb = hexToRgb(currentTheme.primary);
+    const secondaryRgb = hexToRgb(currentTheme.secondary);
+    
+    if (primaryRgb) {
+      root.style.setProperty('--primary-color-rgb', `${primaryRgb.r}, ${primaryRgb.g}, ${primaryRgb.b}`);
+    }
+    if (secondaryRgb) {
+      root.style.setProperty('--secondary-color-rgb', `${secondaryRgb.r}, ${secondaryRgb.g}, ${secondaryRgb.b}`);
+    }
+    
+    root.style.setProperty('--background-default', darkTheme.palette.background.default);
+    root.style.setProperty('--background-paper', darkTheme.palette.background.paper);
+  }, [currentTheme, darkTheme.palette.background.default, darkTheme.palette.background.paper]);
+
+  // Function to randomly change theme colors
+  const changeThemeColors = () => {
+    const randomIndex = Math.floor(Math.random() * colorThemes.length);
+    setCurrentTheme(colorThemes[randomIndex]);
+  };
 
   const sections = [
     { id: 'home', label: 'Explore', key: '1' },
@@ -145,6 +185,29 @@ const App = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div className="app">
+        {/* Floating Color Picker Button */}
+        <Fab
+          size="small"
+          aria-label="change theme colors"
+          onClick={changeThemeColors}
+          sx={{
+            position: 'fixed',
+            top: 24,
+            right: 24,
+            zIndex: 1000,
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.1)',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            }
+          }}
+        >
+          <ColorLensIcon sx={{ color: '#ffffff' }} />
+        </Fab>
+
         <Sidebar
           sections={sections}
           activeSection={activeSection}

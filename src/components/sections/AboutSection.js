@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, Tooltip, Chip, Drawer, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, Tooltip, Chip, Drawer, Box, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const AboutSection = () => {
+  const theme = useTheme();
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [skillModalOpen, setSkillModalOpen] = useState(false);
   const [selectedEducation, setSelectedEducation] = useState(null);
@@ -11,6 +12,16 @@ const AboutSection = () => {
   const [certificationModalOpen, setCertificationModalOpen] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [unitDrawerOpen, setUnitDrawerOpen] = useState(false);
+
+  // Utility function to convert hex to rgba
+  const hexToRgba = (hex, alpha) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return hex;
+    const r = parseInt(result[1], 16);
+    const g = parseInt(result[2], 16);
+    const b = parseInt(result[3], 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
 
   const unitDescriptions = {
     'ICT100': 'A beginner-friendly unit that helps students transition into IT studies by exploring the IT industry and job roles while building fundamental IT skills',
@@ -326,7 +337,7 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Currently completing my Cyber Security degree part-time, with studies spanning computer systems, networking, programming, IT project management and Cyber Security. <span style={{ color: '#3b82f6', fontWeight: '500' }}>Click to view detailed coursework.</span></p>
+            <p className="experience-description">Currently completing my Cyber Security degree part-time, with studies spanning computer systems, networking, programming, IT project management and Cyber Security. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click to view detailed coursework.</span></p>
           </div>
           
           <div className="experience-item">
@@ -376,9 +387,9 @@ const AboutSection = () => {
                 className="skill-item"
                 style={{
                   padding: '0.75rem 1rem',
-                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
                   borderRadius: '8px',
-                  backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                  backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
                   textAlign: 'center',
                   fontSize: '0.9rem',
                   fontWeight: '500',
@@ -390,13 +401,13 @@ const AboutSection = () => {
                 }}
                 onClick={() => handleSkillClick(skill)}
                 onMouseEnter={(e) => {
-                  e.target.style.borderColor = 'rgba(59, 130, 246, 0.6)';
-                  e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                  e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
+                  e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
                   e.target.style.transform = 'translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.borderColor = 'rgba(59, 130, 246, 0.3)';
-                  e.target.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                  e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
+                  e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
                   e.target.style.transform = 'translateY(0)';
                 }}
               >
@@ -432,7 +443,7 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Advanced cybersecurity certification covering information security principles and digital forensics. <span style={{ color: '#3b82f6', fontWeight: '500' }}>Click to view detailed coursework.</span></p>
+            <p className="experience-description">Advanced cybersecurity certification covering information security principles and digital forensics. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click to view detailed coursework.</span></p>
           </div>
           
           <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('front-desk')}>
@@ -459,7 +470,7 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Professional certification in front desk operations and hospitality management. <span style={{ color: '#3b82f6', fontWeight: '500' }}>Click for details.</span></p>
+            <p className="experience-description">Professional certification in front desk operations and hospitality management. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
           
           <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('mental-health')}>
@@ -486,7 +497,7 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Comprehensive training in crisis intervention techniques and mental health support strategies. <span style={{ color: '#3b82f6', fontWeight: '500' }}>Click for details.</span></p>
+            <p className="experience-description">Comprehensive training in crisis intervention techniques and mental health support strategies. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
           
           <div className="experience-item">
@@ -581,7 +592,7 @@ const AboutSection = () => {
         PaperProps={{
           style: {
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px'
           }
         }}
@@ -589,7 +600,7 @@ const AboutSection = () => {
         <DialogTitle 
           style={{ 
             color: '#e5e7eb',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+            borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
             paddingBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
@@ -629,7 +640,7 @@ const AboutSection = () => {
               <Typography 
                 variant="h6" 
                 style={{ 
-                  color: '#8b5cf6', 
+                  color: theme.palette.secondary.main, 
                   marginBottom: '0.5rem',
                   fontWeight: '600'
                 }}
@@ -756,7 +767,7 @@ const AboutSection = () => {
         PaperProps={{
           style: {
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px'
           }
         }}
@@ -764,7 +775,7 @@ const AboutSection = () => {
         <DialogTitle 
           style={{ 
             color: '#e5e7eb',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+            borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
             paddingBottom: '1rem'
           }}
         >
@@ -789,7 +800,7 @@ const AboutSection = () => {
               <Typography 
                 variant="h6" 
                 style={{ 
-                  color: '#3b82f6', 
+                  color: theme.palette.primary.main, 
                   marginBottom: '0.5rem',
                   fontWeight: '600'
                 }}
@@ -831,7 +842,7 @@ const AboutSection = () => {
           style: {
             width: '400px',
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px 0 0 12px',
             zIndex: 9999
           }
@@ -853,14 +864,14 @@ const AboutSection = () => {
                 justifyContent: 'space-between',
                 alignItems: 'flex-start',
                 marginBottom: '1.5rem',
-                borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+                borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
                 paddingBottom: '1rem'
               }}>
                 <div>
                   <Typography 
                     variant="h5" 
                     style={{ 
-                      color: '#8b5cf6',
+                      color: theme.palette.secondary.main,
                       fontWeight: '700',
                       marginBottom: '0.5rem'
                     }}
@@ -905,8 +916,8 @@ const AboutSection = () => {
               <div style={{
                 marginTop: '1.5rem',
                 padding: '1rem',
-                backgroundColor: 'rgba(59, 130, 246, 0.05)',
-                border: '1px solid rgba(59, 130, 246, 0.2)',
+                backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
+                border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
                 borderRadius: '8px'
               }}>
                 <Typography 
@@ -934,7 +945,7 @@ const AboutSection = () => {
         PaperProps={{
           style: {
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px'
           }
         }}
@@ -942,7 +953,7 @@ const AboutSection = () => {
         <DialogTitle 
           style={{ 
             color: '#e5e7eb',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+            borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
             paddingBottom: '1rem'
           }}
         >
@@ -978,7 +989,7 @@ const AboutSection = () => {
               <Typography 
                 variant="h6" 
                 style={{ 
-                  color: '#8b5cf6', 
+                  color: theme.palette.secondary.main, 
                   marginBottom: '1rem',
                   fontWeight: '600'
                 }}

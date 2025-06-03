@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '@mui/material/styles';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './ScrollIndicator.css';
 
 const ScrollIndicator = ({ sections, activeSection }) => {
+  const theme = useTheme();
   const [isVisible, setIsVisible] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -73,7 +75,7 @@ const ScrollIndicator = ({ sections, activeSection }) => {
         <KeyboardArrowDownIcon 
           sx={{ 
             fontSize: 28, 
-            color: '#3b82f6' 
+            color: theme.palette.primary.main 
           }} 
         />
       </div>

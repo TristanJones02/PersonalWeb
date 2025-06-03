@@ -30,8 +30,8 @@
 }
 
 .hero-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 700;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
   margin-bottom: 1rem;
   line-height: 1.1;
   color: #ffffff;
@@ -46,7 +46,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -85,14 +85,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   color: white;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 20px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 30px rgba(var(--primary-color-rgb), 0.4);
 }
 
 .btn-secondary {
@@ -140,7 +140,7 @@
 
 .project-card:hover {
   transform: translateY(-8px);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
@@ -152,7 +152,7 @@
 
 .project-category {
   font-size: 0.875rem;
-  color: #3b82f6;
+  color: var(--primary-color);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -187,7 +187,7 @@
 
 .experience-item:hover {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
   transform: translateY(-2px);
 }
 
@@ -208,7 +208,7 @@
 }
 
 .experience-period {
-  color: #3b82f6;
+  color: var(--primary-color);
   font-size: 0.875rem;
   font-weight: 500;
   background: rgba(59, 130, 246, 0.1);
@@ -218,7 +218,7 @@
 }
 
 .experience-company {
-  color: #8b5cf6;
+  color: var(--secondary-color);
   font-size: 1rem;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -243,7 +243,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   text-align: center;
   font-weight: 600;
   color: #ffffff;
@@ -253,7 +253,7 @@
 
 .stack-item:hover {
   background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
   transform: translateY(-4px);
 }
 
@@ -291,7 +291,10 @@
 }
 
 .contact-link {
-  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
@@ -299,14 +302,11 @@
   text-decoration: none;
   font-weight: 500;
   transition: all 0.3s ease;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
 }
 
 .contact-link:hover {
   background: rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(var(--primary-color-rgb), 0.3);
   transform: translateY(-2px);
 }
 
@@ -334,8 +334,7 @@
   color: #64748b;
   font-style: italic;
   text-align: center;
-  padding: 3rem 0;
-  font-size: 1.1rem;
+  padding: 3rem 2rem;
 }
 
 /* Responsive Design */
@@ -389,7 +388,7 @@
   position: relative;
   display: inline-block;
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

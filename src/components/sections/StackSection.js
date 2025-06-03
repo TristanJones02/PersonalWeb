@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const StackSection = () => {
+  const theme = useTheme();
   const [selectedTech, setSelectedTech] = useState(null);
   const [techModalOpen, setTechModalOpen] = useState(false);
 
@@ -72,6 +73,16 @@ const StackSection = () => {
     }
   };
 
+  // Utility function to convert hex to rgba
+  const hexToRgba = (hex, alpha) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return hex;
+    const r = parseInt(result[1], 16);
+    const g = parseInt(result[2], 16);
+    const b = parseInt(result[3], 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
   const handleTechClick = (tech) => {
     // Set content first, then open dialog after a brief delay
     setSelectedTech(tech);
@@ -114,9 +125,9 @@ const StackSection = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 padding: '2rem 1rem',
-                border: '1px solid rgba(59, 130, 246, 0.3)',
+                border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
                 borderRadius: '12px',
-                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
                 textAlign: 'center',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer',
@@ -128,8 +139,8 @@ const StackSection = () => {
               }}
               onClick={() => handleTechClick(tech)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
-                e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
+                e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
                 e.currentTarget.style.transform = 'translateY(-4px)';
                 // Show text on hover
                 const textElement = e.currentTarget.querySelector('.stack-text');
@@ -139,8 +150,8 @@ const StackSection = () => {
                 }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.3)';
-                e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.05)';
+                e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
+                e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
                 e.currentTarget.style.transform = 'translateY(0)';
                 // Hide text when not hovering
                 const textElement = e.currentTarget.querySelector('.stack-text');
@@ -190,7 +201,7 @@ const StackSection = () => {
         PaperProps={{
           style: {
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px'
           }
         }}
@@ -198,7 +209,7 @@ const StackSection = () => {
         <DialogTitle 
           style={{ 
             color: '#e5e7eb',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+            borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
             paddingBottom: '1rem',
             display: 'flex',
             alignItems: 'center',

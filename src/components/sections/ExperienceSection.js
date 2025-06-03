@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 const ExperienceItem = ({ title, company, period, description, location, companyIcon, companyIcon2, onClick }) => {
+  const theme = useTheme();
+  
   return (
     <div className="experience-item" style={{ cursor: 'pointer' }} onClick={onClick}>
       <div className="experience-header">
@@ -49,14 +51,25 @@ const ExperienceItem = ({ title, company, period, description, location, company
           )}
         </div>
       </div>
-      <p className="experience-description">{description} <span style={{ color: '#3b82f6', fontWeight: '500' }}>Click for detailed experience.</span></p>
+      <p className="experience-description">{description} <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for detailed experience.</span></p>
     </div>
   );
 };
 
 const ExperienceSection = () => {
+  const theme = useTheme();
   const [selectedExperience, setSelectedExperience] = useState(null);
   const [experienceModalOpen, setExperienceModalOpen] = useState(false);
+
+  // Utility function to convert hex to rgba
+  const hexToRgba = (hex, alpha) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (!result) return hex;
+    const r = parseInt(result[1], 16);
+    const g = parseInt(result[2], 16);
+    const b = parseInt(result[3], 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
 
   const experienceDetails = {
     'it-operations-manager': {
@@ -235,7 +248,7 @@ const ExperienceSection = () => {
         PaperProps={{
           style: {
             backgroundColor: '#1a1a1a',
-            border: '1px solid rgba(59, 130, 246, 0.3)',
+            border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
             borderRadius: '12px'
           }
         }}
@@ -243,7 +256,7 @@ const ExperienceSection = () => {
         <DialogTitle 
           style={{ 
             color: '#e5e7eb',
-            borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+            borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
             paddingBottom: '1rem',
             display: 'flex',
             alignItems: 'center',
@@ -284,7 +297,7 @@ const ExperienceSection = () => {
                 <Typography 
                   variant="h6" 
                   style={{ 
-                    color: '#8b5cf6', 
+                    color: theme.palette.secondary.main, 
                     marginBottom: '0.5rem',
                     fontWeight: '600'
                   }}
@@ -344,7 +357,7 @@ const ExperienceSection = () => {
                 <Typography 
                   variant="h6" 
                   style={{ 
-                    color: '#3b82f6', 
+                    color: theme.palette.primary.main, 
                     marginBottom: '1rem',
                     fontWeight: '600'
                   }}
@@ -362,9 +375,9 @@ const ExperienceSection = () => {
                       key={index}
                       style={{
                         padding: '0.25rem 0.75rem',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        color: '#3b82f6',
-                        border: '1px solid rgba(59, 130, 246, 0.3)',
+                        backgroundColor: hexToRgba(theme.palette.primary.main, 0.1),
+                        color: theme.palette.primary.main,
+                        border: `1px solid ${theme.palette.primary.main}33`,
                         borderRadius: '12px',
                         fontSize: '0.75rem',
                         fontWeight: '500'
@@ -406,7 +419,7 @@ const ExperienceSection = () => {
                 <Typography 
                   variant="h6" 
                   style={{ 
-                    color: '#8b5cf6', 
+                    color: theme.palette.secondary.main, 
                     marginBottom: '1rem',
                     fontWeight: '600'
                   }}
@@ -436,7 +449,7 @@ const ExperienceSection = () => {
             onClick={handleExperienceModalClose}
             variant="contained"
             style={{
-              backgroundColor: '#3b82f6',
+              backgroundColor: theme.palette.primary.main,
               color: 'white'
             }}
           >
