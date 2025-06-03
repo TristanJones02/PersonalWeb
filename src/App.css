@@ -1,0 +1,73 @@
+.app {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #ffffff;
+  position: relative;
+}
+
+.main-wrapper {
+  flex: 1;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-wrapper.sidebar-collapsed {
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .main-wrapper {
+    margin-left: 0;
+  }
+
+  .main-wrapper.sidebar-collapsed {
+    margin-left: 0;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Selection styles */
+::selection {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+/* Focus outline */
+button:focus,
+a:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Mobile line break for hero title */
+.mobile-break {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-break {
+    display: block;
+  }
+} 

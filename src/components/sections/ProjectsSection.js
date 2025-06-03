@@ -1,0 +1,41 @@
+import React from 'react';
+import ArticleIcon from '@mui/icons-material/Article';
+
+const ProjectsSection = () => {
+  return (
+    <section id="projects" className="content-section">
+      <div className="container">
+        <h2 className="section-title">Projects Section Coming Soon</h2>
+        <div className="travels-content">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '3rem 1rem',
+            minHeight: '200px'
+          }}>
+            <ArticleIcon 
+              style={{
+                fontSize: '4rem',
+                color: '#3b82f6',
+                marginBottom: '1.5rem'
+              }}
+            />
+            <p style={{
+              fontSize: '1.1rem',
+              color: '#e5e7eb',
+              maxWidth: '500px',
+              lineHeight: '1.6'
+            }}>
+              This section will be coming soon, in a future update of this website.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default ProjectsSection; 

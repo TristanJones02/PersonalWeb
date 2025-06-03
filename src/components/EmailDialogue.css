@@ -1,0 +1,223 @@
+.email-dialogue-paper {
+  background: rgba(15, 15, 15, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  width: 100% !important;
+  max-width: 700px !important;
+}
+
+.email-dialogue-title {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 1.5rem !important;
+  position: relative;
+  padding-bottom: 1rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.email-dialogue-close {
+  position: absolute !important;
+  right: 8px !important;
+  top: 8px !important;
+  color: #94a3b8 !important;
+  transition: all 0.3s ease !important;
+}
+
+.email-dialogue-close:hover {
+  color: #ffffff !important;
+  background: rgba(59, 130, 246, 0.1) !important;
+}
+
+.email-dialogue-content {
+  padding: 2rem !important;
+  width: 100% !important;
+}
+
+/* Simple CSS Grid layout for the form */
+.email-dialogue-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.email-dialogue-row {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.email-dialogue-col {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+/* Message field takes full width */
+.email-dialogue-row:last-child {
+  flex-direction: column;
+}
+
+.email-dialogue-field {
+  width: 100% !important;
+}
+
+/* Style for MuiTelInput to match other fields */
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100% !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root.Mui-focused {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #3b82f6 !important;
+  border-width: 2px !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiInputLabel-root {
+  color: #94a3b8 !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiInputLabel-root.Mui-focused {
+  color: #3b82f6 !important;
+}
+
+.email-dialogue-field .MuiTelInput-TextField .MuiOutlinedInput-input {
+  color: #ffffff !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-root {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100% !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.email-dialogue-field .MuiOutlinedInput-root.Mui-focused {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.email-dialogue-field .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #3b82f6 !important;
+  border-width: 2px !important;
+}
+
+.email-dialogue-field .MuiInputLabel-root {
+  color: #94a3b8 !important;
+}
+
+.email-dialogue-field .MuiInputLabel-root.Mui-focused {
+  color: #3b82f6 !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-input {
+  color: #ffffff !important;
+}
+
+.email-dialogue-field .MuiOutlinedInput-input::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+/* Error state styling */
+.email-dialogue-field .MuiFormHelperText-root {
+  color: #ef4444 !important;
+  font-size: 0.75rem !important;
+  margin-top: 4px !important;
+}
+
+.email-dialogue-field .MuiFormHelperText-root.Mui-error {
+  color: #ef4444 !important;
+}
+
+.email-dialogue-actions {
+  padding: 1rem 2rem !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 1rem;
+}
+
+.email-dialogue-cancel {
+  color: #94a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+.email-dialogue-cancel:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.email-dialogue-send {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 2rem !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+}
+
+.email-dialogue-send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4) !important;
+}
+
+.email-dialogue-send:disabled {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #64748b !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .email-dialogue-paper {
+    margin: 1rem !important;
+    width: calc(100% - 2rem) !important;
+    max-width: none !important;
+  }
+  
+  .email-dialogue-content {
+    padding: 1rem !important;
+  }
+  
+  .email-dialogue-actions {
+    padding: 1rem !important;
+    flex-direction: column;
+  }
+  
+  .email-dialogue-cancel,
+  .email-dialogue-send {
+    width: 100%;
+  }
+} 
