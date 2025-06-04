@@ -114,7 +114,7 @@ const ResumeDialog = ({ open, onClose }) => {
       }}
     >
       <DialogTitle className="resume-dialog-title">
-        Resume - Tristan Jones
+        Curriculum Vitae - Tristan Jones
         <IconButton
           aria-label="download"
           onClick={handleDownload}
