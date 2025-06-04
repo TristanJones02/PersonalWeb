@@ -21,6 +21,25 @@
   letter-spacing: 0.025em;
 }
 
+.inspiration-text {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin: 0.5rem 0 0 0;
+  font-weight: 400;
+  letter-spacing: 0.025em;
+}
+
+.inspiration-text a {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.inspiration-text a:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
 /* Mobile adjustments */
 @media (max-width: 768px) {
   .footer {

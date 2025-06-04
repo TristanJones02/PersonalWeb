@@ -51,7 +51,7 @@ const AboutSection = () => {
     'BSBITU306': 'Create various professional business documents like forms and letters.',
     'BSBITU313': 'Create clear digital text documents using word processors.',
     'BSBITU314': 'Build basic spreadsheets to organize and calculate data.',
-    'BSBITU309': 'Design and produce print-ready documents using desktop publishing tools.',
+    'BSBITU309': 'Produce print-ready documents using desktop publishing tools.',
     'BSBINN301': 'Explore creative thinking and how to support innovation in teams.',
     'BSBWOR204': 'Use business tools and work well with others in a team.',
     'BSBDIV301': 'Learn how to collaborate in diverse workplaces and respect cultural differences.',
@@ -81,7 +81,49 @@ const AboutSection = () => {
     'ICTICT303': 'Install hardware components like RAM or drives inside a computer.',
     'ICTICT302': 'Install and configure operating systems for optimal performance.',
     'ICTSAS306': 'Keep IT equipment and software updated and working properly.',
-    'ICTSAS304': 'Perform admin tasks like managing users and system settings.'
+    'ICTSAS304': 'Perform admin tasks like managing users and system settings.',
+    // Certificate II in Business units
+    'BSBCUS201': 'Developed skills to provide effective customer service and handle customer interactions.',
+    'BSBIND201': 'Gained understanding of workplace expectations and how to operate effectively within them.',
+    'BSBINM201': 'Learned to handle and maintain business information systems efficiently.',
+    'BSBINM202': 'Acquired skills to receive and dispatch incoming and outgoing mail.',
+    // Certificate III in Business units
+    'BSBADM311': 'Managed and maintained business resources to ensure efficiency.',
+    'BSBCMM301': 'Handled customer complaints effectively to maintain customer satisfaction.',
+    'BSBFIA301': 'Maintained accurate financial records in compliance with organizational policies.',
+    'BSBINM301': 'Organized and managed workplace information systems efficiently.',
+    'BSBWOR301': 'Managed personal work schedules and pursued professional development opportunities.',
+    // Certificate I in Hospitality units
+    'SITXCCS001': 'Assisted customers by providing accurate information and support.',
+    'SITXWHS001': 'Engaged in safe work practices to ensure personal and team safety.',
+    'SITHIND001': 'Applied hygiene procedures to maintain cleanliness in hospitality settings.',
+    'SITXFSA001': 'Followed food safety guidelines to prevent contamination.',
+    'SITHCCC001': 'Operated basic food preparation equipment safely and effectively.',
+    // Certificate II in Hospitality units
+    'SITHIND002': 'Researched and applied industry information to enhance work performance.',
+    'SITHIND003': 'Applied hospitality skills in real-world settings to meet service standards.',
+    'SITXCCS003': 'Provided quality customer service through effective communication.',
+    'SITXCOM002': 'Demonstrated respect and sensitivity towards diverse cultures and backgrounds.',
+    'SITHCCC002': 'Prepared basic dishes following standard recipes and presentation techniques.',
+    'SITHFAB005': 'Crafted and served espresso-based coffee beverages to customers.',
+    'SITHFAB007': 'Delivered food and beverages to guests in a professional manner.',
+    'SITXINV001': 'Managed inventory by receiving and storing stock appropriately.',
+    // Certificate II in Kitchen Operations units
+    'SITHCCC005': 'Applied fundamental cooking techniques to prepare a variety of dishes.',
+    'SITHCCC011': 'Demonstrated proficiency in cookery skills during service periods in a commercial kitchen.',
+    'SITHKOP001': 'Maintained cleanliness and hygiene standards in kitchen areas and equipment.',
+    'SITXINV002': 'Managed storage conditions to preserve the quality and safety of perishable food items.',
+    'TLIE1005': 'Performed basic mathematical calculations relevant to kitchen operations.',
+    'SITHCCC003': 'Assembled and presented a range of sandwiches to meet customer requirements.',
+    'SITHCCC004': 'Packaged food items appropriately for storage or takeaway, ensuring quality and safety.',
+    'SITHCCC006': 'Created a variety of appetisers and salads, focusing on presentation and taste.',
+    'SITHCCC007': 'Prepared foundational stocks, sauces, and soups essential for various dishes.',
+    'SITHCCC008': 'Cooked a range of dishes using vegetables, fruits, eggs, and farinaceous products.',
+    'SITHCCC009': 'Prepared food items using cook-chill and cook-freeze methods for later consumption.',
+    'SITHCCC010': 'Safely reheated chilled and frozen foods to appropriate serving temperatures.',
+    'HLTAID011': 'Delivered basic first aid in response to workplace incidents and emergencies.',
+    'SITXFSA002': 'Followed procedures to handle food safely, minimizing risks of contamination.',
+    'SITXFSA003': 'Managed the transportation and storage of food items to maintain quality and safety.'
   };
 
   const educationDetails = {
@@ -174,6 +216,113 @@ const AboutSection = () => {
       organization: 'Mental Health First Aid International',
       period: 'September 2023',
       description: 'Completed Mental Health First Aid training focused on recognising signs of common mental health issues in adults and providing effective initial support. Gained skills in crisis response, referral pathways, and evidence-based approaches to helping others.'
+    },
+    'cert-ii-business': {
+      title: 'Certificate II in Business',
+      organization: 'Skill Strategies International (RTO)',
+      period: 'January — December 2020',
+      description: 'I have successfully completed the BSB20115 Certificate II in Business, equipping me with foundational administrative skills essential for junior business roles. This qualification provided me with practical experience in workplace communication, basic computing, and understanding business operations, preparing me for entry-level positions in various business environments.',
+      units: [
+        { code: 'BSBWHS201', name: 'Contribute to health and safety of self and others' },
+        { code: 'BSBCUS201', name: 'Deliver a service to customers' },
+        { code: 'BSBIND201', name: 'Work effectively in a business environment' },
+        { code: 'BSBINM201', name: 'Process and maintain workplace information' },
+        { code: 'BSBINM202', name: 'Handle mail' },
+        { code: 'BSBINN201', name: 'Contribute to workplace innovation' },
+        { code: 'BSBCMM201', name: 'Communicate in the workplace' },
+        { code: 'BSBITU211', name: 'Produce digital text documents' },
+        { code: 'BSBITU212', name: 'Create and use spreadsheets' },
+        { code: 'BSBITU213', name: 'Use digital technologies to communicate remotely' },
+        { code: 'BSBSMB201', name: 'Identify suitability for micro business' },
+        { code: 'BSBSUS201', name: 'Participate in environmentally sustainable work practices' }
+      ]
+    },
+    'cert-iii-business': {
+      title: 'Certificate III in Business',
+      organization: 'Skill Strategies International (RTO)',
+      period: 'January — December 2020',
+      description: 'Having completed the BSB30115 Certificate III in Business, I have developed a broad range of competencies applicable across various business sectors. This qualification enhanced my abilities in administrative tasks, customer service, and workplace communication, enabling me to provide technical advice and support within a team environment.',
+      units: [
+        { code: 'BSBWHS302', name: 'Apply knowledge of WHS legislation in the workplace' },
+        { code: 'BSBADM311', name: 'Maintain business resources' },
+        { code: 'BSBCMM301', name: 'Process customer complaints' },
+        { code: 'BSBCUS301', name: 'Deliver and monitor a service to customers' },
+        { code: 'BSBDIV301', name: 'Work effectively with diversity' },
+        { code: 'BSBFIA301', name: 'Maintain financial records' },
+        { code: 'BSBFLM303', name: 'Contribute to effective workplace relationships' },
+        { code: 'BSBINM301', name: 'Organise workplace information' },
+        { code: 'BSBITU306', name: 'Design and produce business documents' },
+        { code: 'BSBWOR301', name: 'Organise personal work priorities and development' },
+        { code: 'BSBWRT301', name: 'Write simple documents' },
+        { code: 'BSBSUS401', name: 'Implement and monitor environmentally sustainable work practices' }
+      ]
+    },
+    'cert-i-hospitality': {
+      title: 'Certificate I in Hospitality',
+      organization: 'Hospitality Group Training (RTO)',
+      period: 'February 2018 — December 2019',
+      description: 'By completing the SIT10216 Certificate I in Hospitality, I gained foundational skills for entry-level roles in the hospitality industry. This qualification introduced me to basic customer service, workplace safety, and hygiene practices, preparing me for roles such as bar useful, food runner, or housekeeping assistant.',
+      units: [
+        { code: 'BSBWOR203', name: 'Work effectively with others' },
+        { code: 'SITXCCS001', name: 'Provide customer information and assistance' },
+        { code: 'SITXWHS001', name: 'Participate in safe work practices' },
+        { code: 'SITHIND001', name: 'Use hygienic practices for hospitality service' },
+        { code: 'SITXFSA001', name: 'Use hygienic practices for food safety' },
+        { code: 'SITHCCC001', name: 'Use food preparation equipment' }
+      ]
+    },
+    'cert-ii-hospitality': {
+      title: 'Certificate II in Hospitality',
+      organization: 'Hospitality Group Training (RTO)',
+      period: 'February 2018 — December 2019',
+      description: 'Completing the SIT20316 Certificate II in Hospitality allowed me to develop operational skills for various hospitality settings. I learned to interact with customers, work effectively in teams, and perform tasks under supervision, preparing me for roles such as bar attendant, café attendant, or catering assistant.',
+      units: [
+        { code: 'BSBWOR203', name: 'Work effectively with others' },
+        { code: 'SITHIND002', name: 'Source and use information on the hospitality industry' },
+        { code: 'SITHIND003', name: 'Use hospitality skills effectively' },
+        { code: 'SITXCCS003', name: 'Interact with customers' },
+        { code: 'SITXCOM002', name: 'Show social and cultural sensitivity' },
+        { code: 'SITXWHS001', name: 'Participate in safe work practices' },
+        { code: 'SITHIND001', name: 'Use hygienic practices for hospitality service' },
+        { code: 'SITXFSA001', name: 'Use hygienic practices for food safety' },
+        { code: 'SITHCCC002', name: 'Prepare and present simple dishes' },
+        { code: 'SITHFAB005', name: 'Prepare and serve espresso coffee' },
+        { code: 'SITHFAB007', name: 'Serve food and beverage' },
+        { code: 'SITXINV001', name: 'Receive and store stock' }
+      ]
+    },
+    'cert-ii-kitchen': {
+      title: 'Certificate II in Kitchen Operations',
+      organization: 'Hospitality Group Training (RTO)',
+      period: 'February — December 2020',
+      description: 'I have successfully completed the SIT20416 Certificate II in Kitchen Operations, which provided me with foundational skills and knowledge essential for working in commercial kitchen environments. Throughout the course, I developed competencies in food preparation, hygiene practices, kitchen safety, and teamwork, preparing me for roles such as kitchen hand, catering assistant, or food preparation assistant.',
+      units: [
+        { code: 'BSBWOR203', name: 'Work effectively with others' },
+        { code: 'SITHCCC001', name: 'Use food preparation equipment' },
+        { code: 'SITHCCC005', name: 'Prepare dishes using basic methods of cookery' },
+        { code: 'SITHCCC011', name: 'Use cookery skills effectively' },
+        { code: 'SITHKOP001', name: 'Clean kitchen premises and equipment' },
+        { code: 'SITXFSA001', name: 'Use hygienic practices for food safety' },
+        { code: 'SITXINV002', name: 'Maintain the quality of perishable items' },
+        { code: 'SITXWHS001', name: 'Participate in safe work practices' },
+        { code: 'TLIE1005', name: 'Carry out basic workplace calculations' },
+        { code: 'SITXCCS003', name: 'Interact with customers' },
+        { code: 'SITHCCC002', name: 'Prepare and present simple dishes' },
+        { code: 'SITHCCC003', name: 'Prepare and present sandwiches' },
+        { code: 'SITHCCC004', name: 'Package prepared foodstuffs' },
+        { code: 'SITHCCC006', name: 'Prepare appetisers and salads' },
+        { code: 'SITHCCC007', name: 'Prepare stocks, sauces and soups' },
+        { code: 'SITHCCC008', name: 'Prepare vegetable, fruit, egg and farinaceous dishes' },
+        { code: 'SITHCCC009', name: 'Produce cook-chill and cook-freeze foods' },
+        { code: 'SITHCCC010', name: 'Re-thermalise chilled and frozen foods' },
+        { code: 'BSBCMM201', name: 'Communicate in the workplace' },
+        { code: 'SITXCOM002', name: 'Show social and cultural sensitivity' },
+        { code: 'BSBSUS201', name: 'Participate in environmentally sustainable work practices' },
+        { code: 'HLTAID011', name: 'Provide first aid' },
+        { code: 'SITXFSA002', name: 'Participate in safe food handling practices' },
+        { code: 'SITXFSA003', name: 'Transport and store food' },
+        { code: 'SITHIND002', name: 'Source and use information on the hospitality industry' }
+      ]
     }
   };
 
@@ -500,7 +649,7 @@ const AboutSection = () => {
             <p className="experience-description">Comprehensive training in crisis intervention techniques and mental health support strategies. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
           
-          <div className="experience-item">
+          <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('cert-ii-kitchen')}>
             <div className="experience-header">
               <h3 className="experience-title">Certificate II in Kitchen Operations</h3>
               <span className="experience-period">February — December 2020</span>
@@ -524,12 +673,12 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Comprehensive training in commercial kitchen operations and food safety protocols.</p>
+            <p className="experience-description">Comprehensive training in commercial kitchen operations and food safety protocols. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
           
-          <div className="experience-item">
+          <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('cert-iii-business')}>
             <div className="experience-header">
-              <h3 className="experience-title">Certificate II & III in Business</h3>
+              <h3 className="experience-title">Certificate III in Business</h3>
               <span className="experience-period">January — December 2020</span>
             </div>
             <div style={{ 
@@ -551,12 +700,39 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Business fundamentals including administration, customer service, and workplace communication.</p>
+            <p className="experience-description">Enhanced abilities in administrative tasks, customer service, and workplace communication. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
           
-          <div className="experience-item">
+          <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('cert-ii-business')}>
             <div className="experience-header">
-              <h3 className="experience-title">Certificate I & II in Hospitality</h3>
+              <h3 className="experience-title">Certificate II in Business</h3>
+              <span className="experience-period">January — December 2020</span>
+            </div>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between' 
+            }}>
+              <div>
+                <p className="experience-company">Skill Strategies International (RTO)</p>
+              </div>
+              <img
+                src="/company_icons/SkillsStrat.png"
+                alt="Skill Strategies International"
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '12px',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+            <p className="experience-description">Foundational administrative skills essential for junior business roles. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
+          </div>
+          
+          <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('cert-ii-hospitality')}>
+            <div className="experience-header">
+              <h3 className="experience-title">Certificate II in Hospitality</h3>
               <span className="experience-period">February 2018 — December 2019</span>
             </div>
             <div style={{ 
@@ -578,7 +754,34 @@ const AboutSection = () => {
                 }}
               />
             </div>
-            <p className="experience-description">Foundation hospitality skills including customer service, food and beverage service, and industry practices.</p>
+            <p className="experience-description">Developed operational skills for various hospitality settings including customer interaction and teamwork. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
+          </div>
+          
+          <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick('cert-i-hospitality')}>
+            <div className="experience-header">
+              <h3 className="experience-title">Certificate I in Hospitality</h3>
+              <span className="experience-period">February 2018 — December 2019</span>
+            </div>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between' 
+            }}>
+              <div>
+                <p className="experience-company">Hospitality Group Training (RTO)</p>
+              </div>
+              <img
+                src="/company_icons/HGT.png"
+                alt="Hospitality Group Training"
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '12px',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+            <p className="experience-description">Foundation hospitality skills including customer service, workplace safety, and hygiene practices. <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for details.</span></p>
           </div>
         </div>
       </div>
@@ -776,9 +979,30 @@ const AboutSection = () => {
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
-            paddingBottom: '1rem'
+            paddingBottom: '1rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1rem'
           }}
         >
+          {selectedCertification && (
+            <img
+              src={selectedCertification === 'front-desk' ? "/company_icons/AHLA.png" : 
+                   selectedCertification === 'mental-health' ? "/company_icons/MenHealFA.png" :
+                   (selectedCertification === 'cert-ii-business' || selectedCertification === 'cert-iii-business') ? "/company_icons/SkillsStrat.png" :
+                   (selectedCertification === 'cert-i-hospitality' || selectedCertification === 'cert-ii-hospitality' || selectedCertification === 'cert-ii-kitchen') ? "/company_icons/HGT.png" : "/company_icons/AHLA.png"}
+              alt={selectedCertification === 'front-desk' ? "American Hotel & Lodging Association" : 
+                   selectedCertification === 'mental-health' ? "Mental Health First Aid International" :
+                   (selectedCertification === 'cert-ii-business' || selectedCertification === 'cert-iii-business') ? "Skill Strategies International" :
+                   (selectedCertification === 'cert-i-hospitality' || selectedCertification === 'cert-ii-hospitality' || selectedCertification === 'cert-ii-kitchen') ? "Hospitality Group Training" : "American Hotel & Lodging Association"}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                objectFit: 'contain'
+              }}
+            />
+          )}
           {selectedCertification && certificationDetails[selectedCertification]?.title}
           <IconButton
             aria-label="close"
@@ -822,11 +1046,55 @@ const AboutSection = () => {
                 variant="body1" 
                 style={{ 
                   color: '#e5e7eb', 
-                  lineHeight: '1.6'
+                  lineHeight: '1.6',
+                  marginBottom: certificationDetails[selectedCertification]?.units ? '2rem' : '0'
                 }}
               >
                 {certificationDetails[selectedCertification]?.description}
               </Typography>
+
+              {certificationDetails[selectedCertification]?.units && (
+                <>
+                  <Typography 
+                    variant="h6" 
+                    style={{ 
+                      color: '#22c55e', 
+                      marginBottom: '1rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    Completed Units
+                  </Typography>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '0.75rem'
+                  }}>
+                    {certificationDetails[selectedCertification]?.units.map((unit, index) => (
+                      <Tooltip
+                        key={index}
+                        title={unitDescriptions[unit.code]}
+                        arrow
+                        placement="top"
+                      >
+                        <Chip
+                          label={`${unit.code} ${unit.name}`}
+                          onClick={() => handleUnitClick(unit)}
+                          style={{
+                            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                            color: '#22c55e',
+                            border: '1px solid rgba(34, 197, 94, 0.3)',
+                            fontSize: '0.75rem',
+                            height: '28px',
+                            cursor: 'pointer'
+                          }}
+                        />
+                      </Tooltip>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </DialogContent>
