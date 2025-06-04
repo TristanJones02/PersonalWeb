@@ -8,18 +8,18 @@ const StackSection = () => {
   const [techModalOpen, setTechModalOpen] = useState(false);
 
   const technologies = [
-    { name: 'Cloudflare', icon: '/stack_icons/Cloudflare.png' },
+    { name: 'Cloudflare', icon: '/stack_icons/cloudflare.png' },
     { name: 'Digital Ocean', icon: '/stack_icons/digitalocean.png' },
-    { name: 'Electron', icon: '/stack_icons/Electron.png' },
-    { name: 'Idealpos', icon: '/stack_icons/Idealpos.png' },
-    { name: 'Jira', icon: '/stack_icons/Jira.png' },
+    { name: 'Electron', icon: '/stack_icons/electron.png' },
+    { name: 'Idealpos', icon: '/stack_icons/idealpos.png' },
+    { name: 'Jira', icon: '/stack_icons/jira.png' },
     { name: 'Material UI', icon: '/stack_icons/material.png' },
     { name: 'Postgresql', icon: '/stack_icons/postgres.png' },
-    { name: 'qPilot', icon: '/stack_icons/qPilot.png' },
-    { name: 'React', icon: '/stack_icons/React.png' },
+    { name: 'qPilot', icon: '/stack_icons/qpilot.png' },
+    { name: 'React', icon: '/stack_icons/react.png' },
     { name: 'Track-POD', icon: '/stack_icons/trackpod.png' },
-    { name: 'WooCommerce', icon: '/stack_icons/WooCommerce.png' },
-    { name: 'Wordpress', icon: '/stack_icons/Wordpress.png' }
+    { name: 'WooCommerce', icon: '/stack_icons/woocommerce.png' },
+    { name: 'Wordpress', icon: '/stack_icons/wordpress.png' }
   ];
 
   const techDetails = {
