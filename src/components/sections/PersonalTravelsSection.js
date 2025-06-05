@@ -1,90 +1,233 @@
-import React, { useState } from 'react';
-import { useTheme, Box, Card, CardMedia, CardContent, Typography, Chip, Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { useTheme, Box, Card, CardMedia, CardContent, Typography, Chip, Dialog, DialogTitle, DialogContent, IconButton, CircularProgress } from '@mui/material';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 import CloseIcon from '@mui/icons-material/Close';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import FlightIcon from '@mui/icons-material/Flight';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import PublicIcon from '@mui/icons-material/Public';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import ScrollReveal from '../animations/ScrollReveal';
 
 const PersonalTravelsSection = () => {
   const theme = useTheme();
   const [selectedTravel, setSelectedTravel] = useState(null);
   const [travelModalOpen, setTravelModalOpen] = useState(false);
+  const [travels, setTravels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const tooltipRef = React.useRef(null);
 
-  // Dummy travel data
-  const travels = [
-    {
-      id: 1,
-      destination: 'Tokyo, Japan',
-      country: 'Japan',
-      countryCode: 'JPN',
-      coordinates: [139.6503, 35.6762], // [lng, lat] for react-simple-maps
-      postcode: '100-0001',
-      date: 'March 2024',
-      duration: '10 days',
-      image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop',
-      description: 'Explored the vibrant streets of Tokyo, from the bustling districts of Shibuya and Harajuku to the serene gardens of the Imperial Palace.',
-      highlights: ['Cherry Blossom Season', 'Sushi at Tsukiji', 'Tech Districts', 'Traditional Temples'],
-      tags: ['Culture', 'Food', 'Technology', 'Urban']
-    },
-    {
-      id: 2,
-      destination: 'Reykjavik, Iceland',
-      country: 'Iceland',
-      countryCode: 'ISL',
-      coordinates: [-21.9426, 64.1466],
-      postcode: '101',
-      date: 'January 2024',
-      duration: '7 days',
-      image: 'https://images.unsplash.com/photo-1539066331-8a08b8db47d2?w=600&h=400&fit=crop',
-      description: 'Witnessed the magical Northern Lights and explored the dramatic landscapes of Iceland, including geysers, waterfalls, and glaciers.',
-      highlights: ['Northern Lights', 'Blue Lagoon', 'Golden Circle', 'Glacier Tours'],
-      tags: ['Nature', 'Adventure', 'Photography', 'Winter']
-    },
-    {
-      id: 3,
-      destination: 'Cape Town, South Africa',
-      country: 'South Africa',
-      countryCode: 'ZAF',
-      coordinates: [18.4241, -33.9249],
-      postcode: '8001',
-      date: 'November 2023',
-      duration: '12 days',
-      image: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&h=400&fit=crop',
-      description: 'Discovered the stunning landscapes of Cape Town, from Table Mountain to the Cape of Good Hope, and explored the wine regions.',
-      highlights: ['Table Mountain', 'Wine Tasting', 'Penguin Colony', 'Cape Point'],
-      tags: ['Nature', 'Wine', 'Wildlife', 'Adventure']
-    },
-    {
-      id: 4,
-      destination: 'Sydney, Australia',
-      country: 'Australia',
-      countryCode: 'AUS',
-      coordinates: [151.2093, -33.8688],
-      postcode: '2000',
-      date: 'September 2023',
-      duration: '14 days',
-      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop',
-      description: 'Experienced the iconic Sydney Opera House, climbed the Harbour Bridge, and enjoyed the beautiful beaches of Bondi and Manly.',
-      highlights: ['Opera House', 'Harbour Bridge', 'Bondi Beach', 'Blue Mountains'],
-      tags: ['Urban', 'Beach', 'Architecture', 'Culture']
-    },
-    {
-      id: 5,
-      destination: 'Banff, Canada',
-      country: 'Canada',
-      countryCode: 'CAN',
-      coordinates: [-115.5708, 51.1784],
-      postcode: 'T1L',
-      date: 'July 2023',
-      duration: '8 days',
-      image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=400&fit=crop',
-      description: 'Explored the breathtaking Canadian Rockies, hiked pristine mountain trails, and witnessed stunning alpine lakes.',
-      highlights: ['Lake Louise', 'Moraine Lake', 'Mountain Hiking', 'Wildlife Spotting'],
-      tags: ['Nature', 'Hiking', 'Mountains', 'Photography']
+  // Fetch travels from API
+  useEffect(() => {
+    const fetchTravels = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api_cache/travel.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch travels');
+        }
+        const data = await response.json();
+        
+        // Transform API data to match component format
+        const transformedTravels = data.result.map(travel => ({
+          id: travel._id,
+          destination: travel.destination,
+          place: travel.place,
+          country: travel.country,
+          countryCode: travel.countryCode,
+          coordinates: travel.coordinates,
+          postcode: travel.postcode,
+          date: travel.date,
+          duration: travel.duration,
+          image: travel.image?.asset?.url || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop',
+          description: travel.description || [], // Keep raw blocks for rich text rendering
+          descriptionPreview: extractDescriptionPreview(travel.description), // Plain text for cards
+          highlights: travel.highlights || [],
+          tags: travel.tags || [],
+          gallery: transformGallery(travel.gallery)
+        }));
+        
+        setTravels(transformedTravels);
+      } catch (err) {
+        console.error('Error fetching travels:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTravels();
+  }, []);
+
+  // Helper function to extract description from rich text blocks
+  const extractDescription = (description) => {
+    if (!description || !Array.isArray(description)) return 'No description available.';
+    
+    return description
+      .filter(block => block._type === 'block' && block.children)
+      .map(block => {
+        const text = block.children
+          .map(child => {
+            let text = child.text || '';
+            if (child.marks && child.marks.includes('strong')) {
+              text = `**${text}**`;
+            }
+            return text;
+          })
+          .join('');
+        
+        if (block.listItem === 'bullet') {
+          return `• ${text}`;
+        }
+        if (block.style === 'h2') {
+          return `\n## ${text}\n`;
+        }
+        return text;
+      })
+      .join('\n')
+      .trim();
+  };
+
+  // Helper function to extract plain text preview for cards
+  const extractDescriptionPreview = (description) => {
+    if (!description || !Array.isArray(description)) return 'No description available.';
+    
+    // Get only normal text blocks (not headings or bullets) for preview
+    const textBlocks = description
+      .filter(block => 
+        block._type === 'block' && 
+        block.children && 
+        block.style === 'normal' && 
+        !block.listItem
+      )
+      .map(block => 
+        block.children
+          .map(child => child.text || '')
+          .join(' ')
+      )
+      .join(' ')
+      .trim();
+    
+    // Return truncated preview
+    return textBlocks.length > 120 ? textBlocks.substring(0, 120) + '...' : textBlocks;
+  };
+
+  // Rich Text Renderer Component for proper formatting
+  const RichTextRenderer = ({ blocks }) => {
+    if (!blocks || !Array.isArray(blocks)) {
+      return <Typography variant="body1" sx={{ color: '#ddd', lineHeight: 1.7 }}>No description available.</Typography>;
     }
-  ];
+
+    return (
+      <Box>
+        {blocks
+          .filter(block => block._type === 'block' && block.children)
+          .map((block, blockIndex) => {
+            const blockContent = block.children.map((child, childIndex) => {
+              const text = child.text || '';
+              const marks = child.marks || [];
+              
+              let element = text;
+              
+              if (marks.includes('strong')) {
+                element = <strong key={childIndex}>{text}</strong>;
+              } else if (marks.includes('code')) {
+                element = <code key={childIndex} style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                  padding: '2px 4px', 
+                  borderRadius: '3px',
+                  fontFamily: 'monospace',
+                  fontSize: '0.9em'
+                }}>{text}</code>;
+              } else {
+                element = <span key={childIndex}>{text}</span>;
+              }
+              
+              return element;
+            });
+
+            // Handle different block styles
+            if (block.listItem === 'bullet') {
+              return (
+                <Typography 
+                  key={blockIndex} 
+                  component="li" 
+                  variant="body1" 
+                  sx={{ 
+                    color: '#ddd', 
+                    lineHeight: 1.7, 
+                    mb: 0.5,
+                    listStyleType: 'disc',
+                    ml: 2
+                  }}
+                >
+                  {blockContent}
+                </Typography>
+              );
+            } else if (block.style === 'h2') {
+              return (
+                <Typography 
+                  key={blockIndex} 
+                  variant="h6" 
+                  sx={{ 
+                    color: '#fff', 
+                    fontWeight: 600, 
+                    mt: 2, 
+                    mb: 1,
+                    fontSize: '1.1rem'
+                  }}
+                >
+                  {blockContent}
+                </Typography>
+              );
+            } else if (block.style === 'h3') {
+              return (
+                <Typography 
+                  key={blockIndex} 
+                  variant="subtitle1" 
+                  sx={{ 
+                    color: '#fff', 
+                    fontWeight: 600, 
+                    mt: 1.5, 
+                    mb: 0.5,
+                    fontSize: '1rem'
+                  }}
+                >
+                  {blockContent}
+                </Typography>
+              );
+            } else {
+              return (
+                <Typography 
+                  key={blockIndex} 
+                  variant="body1" 
+                  sx={{ 
+                    color: '#ddd', 
+                    lineHeight: 1.7, 
+                    mb: 1
+                  }}
+                >
+                  {blockContent}
+                </Typography>
+              );
+            }
+          })}
+      </Box>
+    );
+  };
+
+  // Helper function to transform gallery images
+  const transformGallery = (gallery) => {
+    if (!gallery || !Array.isArray(gallery)) return [];
+    
+    return gallery
+      .filter(item => item.image?.asset?.url)
+      .map((item, index) => ({
+        image: item.image.asset.url,
+        caption: item.caption || `Gallery image ${index + 1}`
+      }));
+  };
 
   // Countries visited (for map coloring)
   const visitedCountryCodes = [...new Set(travels.map(travel => travel.countryCode))];
@@ -137,32 +280,37 @@ const PersonalTravelsSection = () => {
               }
               
               // Log a few specific countries to see what properties we have
-              if (countryName && (countryName.includes('Japan') || countryName.includes('Canada') || countryName.includes('Australia'))) {
+              if (countryName && visitedCountryNames.some(visited => countryName.toLowerCase().includes(visited))) {
                 console.log('Target country properties:', {
                   name: countryName,
                   allProps: Object.keys(props)
                 });
               }
               
-              // Simplified direct matching for our specific countries using the correct property
+              // Check if this country is visited using multiple matching strategies
               const isVisited = 
+                // Direct country code matching
+                visitedCountryCodes.some(code => 
+                  props.ISO_A3 === code || 
+                  props.ISO_A2 === code || 
+                  props.ADM0_A3 === code
+                ) ||
                 // Direct name matching
-                (countryName === 'Japan') ||
-                (countryName === 'Iceland') ||
-                (countryName === 'South Africa') ||
-                (countryName === 'Australia') ||
-                (countryName === 'Canada') ||
-                // Contains matching (case insensitive) for variations
-                (countryName && countryName.toLowerCase().includes('japan')) ||
-                (countryName && countryName.toLowerCase().includes('iceland')) ||
-                (countryName && countryName.toLowerCase().includes('south africa')) ||
-                (countryName && countryName.toLowerCase().includes('australia')) ||
-                (countryName && countryName.toLowerCase().includes('canada'));
+                visitedCountryNames.some(visited => 
+                  countryName && countryName.toLowerCase().includes(visited)
+                ) ||
+                // Specific country name variations
+                travels.some(travel => {
+                  const travelCountry = travel.country.toLowerCase();
+                  const mapCountry = countryName ? countryName.toLowerCase() : '';
+                  return mapCountry.includes(travelCountry) || travelCountry.includes(mapCountry);
+                });
               
               // Log any matches
               if (isVisited) {
                 console.log('✅ MATCHED VISITED COUNTRY:', {
-                  name: countryName
+                  name: countryName,
+                  visitedCountries: travels.map(t => t.country)
                 });
               }
               
@@ -304,123 +452,150 @@ const PersonalTravelsSection = () => {
   return (
     <section id="travels" className="content-section">
       <div className="container">
-        <h2 className="section-title">Travel & Adventures</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title">Travel & Adventures</h2>
+        </ScrollReveal>
         
-        {/* World Map */}
-        <Box sx={{ mb: 4 }}>
-          <WorldMap />
-        </Box>
-        
-        {/* Travel Cards */}
-        <Box 
-          sx={{ 
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 2,
-            justifyContent: 'center',
-            '@media (max-width: 600px)': {
-              flexDirection: 'column'
-            }
-          }}
-        >
-          {travels.map((travel) => (
-            <Box
-              key={travel.id}
-              sx={{ 
-                flex: {
-                  xs: '1 1 100%',
-                  sm: '1 1 calc(50% - 8px)',
-                  md: '1 1 calc(33.333% - 11px)'
-                },
-                minWidth: 0,
-                maxWidth: {
-                  xs: '100%',
-                  sm: 'calc(50% - 8px)',
-                  md: 'calc(33.333% - 11px)'
-                }
-              }}
-            >
-              <Card 
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+            <CircularProgress sx={{ color: theme.palette.primary.main }} />
+          </Box>
+        ) : error ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" sx={{ color: '#ff6b6b', mb: 2 }}>
+              Error loading travels
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#ccc' }}>
+              {error}
+            </Typography>
+          </Box>
+        ) : travels.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" sx={{ color: '#ccc' }}>
+              No travels to display yet. Stay tuned for upcoming adventures!
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            {/* World Map - Only show if there are travels */}
+            <ScrollReveal direction="up" delay={200}>
+              <Box sx={{ mb: 4 }}>
+                <WorldMap />
+              </Box>
+            </ScrollReveal>
+            
+            {/* Travel Cards */}
+            <ScrollReveal direction="up" delay={300}>
+              <Box 
                 sx={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  cursor: 'pointer',
-                  height: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: theme.palette.primary.main,
-                    transform: 'translateY(-8px)',
-                    boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`
-                  }
+                  flexWrap: 'wrap',
+                  gap: 2,
+                  justifyContent: 'center',
+                  '@media (max-width: 900px)': {
+                    flexDirection: 'column'
+                  },
                 }}
-                onClick={() => handleTravelClick(travel)}
               >
-                <Box sx={{ width: '100%', height: 160, overflow: 'hidden' }}>
-                  <CardMedia
-                    component="img"
-                    image={travel.image}
-                    alt={travel.destination}
-                    sx={{ 
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </Box>
-                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 1.5 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                    <Typography variant="h6" sx={{ color: '#fff', fontWeight: 600, flexGrow: 1, lineHeight: 1.2, fontSize: '1rem' }}>
-                      {travel.destination}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: '#888', ml: 1, flexShrink: 0, fontSize: '0.65rem' }}>
-                      {travel.date}
-                    </Typography>
-                  </Box>
-                  
-                  <Typography variant="body2" sx={{ color: '#ccc', mb: 1.5, lineHeight: 1.3, flexGrow: 1, fontSize: '0.8rem' }}>
-                    {travel.description.substring(0, 120)}...
-                  </Typography>
-                  
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.4, mt: 'auto' }}>
-                    {travel.tags.slice(0, 3).map((tag, index) => (
-                      <Chip
-                        key={index}
-                        label={tag}
-                        size="small"
-                        onClick={(e) => e.stopPropagation()}
-                        sx={{
-                          backgroundColor: `${theme.palette.secondary.main}15`,
-                          color: theme.palette.secondary.main,
-                          border: `1px solid ${theme.palette.secondary.main}30`,
-                          fontSize: '0.6rem',
-                          height: 18
+                {travels.map((travel, index) => (
+                  <ScrollReveal 
+                    key={travel.id} 
+                    direction="up" 
+                    delay={400 + (index * 100)}
+                    threshold={0.1}
+                    className="project-grid-item"
+                  >
+                    <Box
+                      sx={{ 
+                        width: '100%',
+                        height: '100%'
+                      }}
+                    >
+                      <Card 
+                        sx={{ 
+                          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          borderRadius: 2,
+                          overflow: 'hidden',
+                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                          cursor: 'pointer',
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: theme.palette.primary.main,
+                            transform: 'translateY(-8px)',
+                            boxShadow: `0 20px 40px rgba(0, 0, 0, 0.3)`
+                          }
                         }}
-                      />
-                    ))}
-                    {travel.tags.length > 3 && (
-                      <Chip
-                        label={`+${travel.tags.length - 3}`}
-                        size="small"
-                        onClick={(e) => e.stopPropagation()}
-                        sx={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          color: '#888',
-                          fontSize: '0.6rem',
-                          height: 18
-                        }}
-                      />
-                    )}
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          ))}
-        </Box>
+                        onClick={() => handleTravelClick(travel)}
+                      >
+                        <Box sx={{ width: '100%', height: 160, overflow: 'hidden' }}>
+                          <CardMedia
+                            component="img"
+                            image={travel.image}
+                            alt={travel.destination}
+                            sx={{ 
+                              width: '100%',
+                              height: '250px',
+                              objectFit: 'cover'
+                            }}
+                          />
+                        </Box>
+                        <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 1.5 }}>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                            <Typography variant="h6" sx={{ color: '#fff', fontWeight: 600, flexGrow: 1, lineHeight: 1.2, fontSize: '1rem' }}>
+                              {travel.destination}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#888', ml: 1, flexShrink: 0, fontSize: '0.65rem' }}>
+                              {travel.date}
+                            </Typography>
+                          </Box>
+                          
+                          <Typography variant="body2" sx={{ color: '#ccc', mb: 1.5, lineHeight: 1.3, flexGrow: 1, fontSize: '0.8rem' }}>
+                            {travel.descriptionPreview}
+                          </Typography>
+                          
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.4, mt: 'auto' }}>
+                            {travel.tags.slice(0, 3).map((tag, index) => (
+                              <Chip
+                                key={index}
+                                label={tag}
+                                size="small"
+                                onClick={(e) => e.stopPropagation()}
+                                sx={{
+                                  backgroundColor: `${theme.palette.secondary.main}15`,
+                                  color: theme.palette.secondary.main,
+                                  border: `1px solid ${theme.palette.secondary.main}30`,
+                                  fontSize: '0.6rem',
+                                  height: 18
+                                }}
+                              />
+                            ))}
+                            {travel.tags.length > 3 && (
+                              <Chip
+                                label={`+${travel.tags.length - 3}`}
+                                size="small"
+                                onClick={(e) => e.stopPropagation()}
+                                sx={{
+                                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                  color: '#888',
+                                  fontSize: '0.6rem',
+                                  height: 18
+                                }}
+                              />
+                            )}
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  </ScrollReveal>
+                ))}
+              </Box>
+            </ScrollReveal>
+          </>
+        )}
       </div>
 
       {/* Travel Details Modal */}
@@ -430,6 +605,7 @@ const PersonalTravelsSection = () => {
         maxWidth={false}
         fullWidth={false}
         PaperProps={{
+          className: 'large-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${theme.palette.primary.main}30`,
@@ -441,6 +617,7 @@ const PersonalTravelsSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#fff',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
@@ -485,7 +662,11 @@ const PersonalTravelsSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '2rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ 
+          padding: '2rem',
+          overflowY: 'auto',
+          maxHeight: 'calc(90vh - 120px)'
+        }}>
           {selectedTravel && (
             <Box sx={{ 
               display: 'flex',
@@ -496,66 +677,211 @@ const PersonalTravelsSection = () => {
             }}>
               {/* Left Column - Image and Description */}
               <Box sx={{ flex: 2 }}>
+                <Typography variant="h6" sx={{ color: '#22c55e', mb: 2, fontWeight: 600 }}>
+                  Travel Experience
+                </Typography>
+                <Box sx={{ mb: 3 }}>
+                  <RichTextRenderer blocks={selectedTravel.description} />
+                </Box>
+                
+                {/* Image Gallery - Masonry Style */}
+                {selectedTravel.gallery && selectedTravel.gallery.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Box
+                      sx={{ 
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: 2,
+                        '& > *': {
+                          breakInside: 'avoid'
+                        }
+                      }}
+                    >
+                      {selectedTravel.gallery.map((photo, index) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            position: 'relative',
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            '&:hover': {
+                              transform: 'translateY(-4px)',
+                              boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)',
+                              borderColor: theme.palette.primary.main
+                            },
+                            '&:hover .caption': {
+                              opacity: 1
+                            }
+                          }}
+                          onClick={() => window.open(photo.image, '_blank')}
+                        >
+                          <img
+                            src={photo.image}
+                            alt={photo.caption}
+                            style={{
+                              width: '100%',
+                              height: '250px',
+                              objectFit: 'cover',
+                              display: 'block',
+                              transition: 'transform 0.3s ease'
+                            }}
+                          />
+                          {/* Caption overlay */}
+                          <Box
+                            className="caption"
+                            sx={{
+                              position: 'absolute',
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.8))',
+                              color: '#fff',
+                              p: 2,
+                              opacity: 0,
+                              transition: 'opacity 0.3s ease'
+                            }}
+                          >
+                            <Typography variant="caption" sx={{ fontSize: '0.75rem', lineHeight: 1.3 }}>
+                              {photo.caption}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+
+              {/* Right Column - Travel Details */}
+              <Box sx={{ flex: 1, minWidth: '300px' }}>
                 <Box sx={{ mb: 3 }}>
                   <img
                     src={selectedTravel.image}
                     alt={selectedTravel.destination}
                     style={{
                       width: '100%',
-                      height: '300px',
+                      height: '200px',
                       objectFit: 'cover',
-                      borderRadius: '8px'
+                      borderRadius: '8px',
+                      marginBottom: '1rem'
                     }}
                   />
                 </Box>
                 
-                <Typography variant="h6" sx={{ color: '#22c55e', mb: 2, fontWeight: 600 }}>
-                  Travel Experience
-                </Typography>
-                <Typography variant="body1" sx={{ color: '#ddd', lineHeight: 1.7, mb: 3 }}>
-                  {selectedTravel.description}
-                </Typography>
-                
-                <Typography variant="h6" sx={{ color: '#f59e0b', mb: 2, fontWeight: 600 }}>
-                  Highlights
-                </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {selectedTravel.highlights?.map((highlight, index) => (
-                    <Chip
-                      key={index}
-                      label={highlight}
-                      onClick={(e) => e.stopPropagation()}
-                      sx={{
-                        backgroundColor: `${theme.palette.primary.main}15`,
-                        color: theme.palette.primary.main,
-                        border: `1px solid ${theme.palette.primary.main}30`
-                      }}
-                    />
-                  ))}
-                </Box>
-              </Box>
-
-              {/* Right Column - Travel Details */}
-              <Box sx={{ flex: 1, minWidth: '300px' }}>
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="h6" sx={{ color: '#888', mb: 2, fontWeight: 600 }}>
                     Location Details
                   </Typography>
-                  <Box sx={{ p: 2, backgroundColor: 'rgba(255, 255, 255, 0.03)', borderRadius: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#ccc' }}>Country:</Typography>
-                      <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>{selectedTravel.country}</Typography>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, width: '100%' }}>
+                    {/* First Row */}
+                    <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                      {/* Location Card */}
+                      <Box sx={{ 
+                        flex: 1,
+                        p: 2, 
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)', 
+                        borderRadius: 1,
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <LocationOnIcon sx={{ fontSize: 16, color: '#fff' }} />
+                          <Typography variant="caption" sx={{ color: '#ccc' }}>Location</Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600, fontSize: '0.9rem' }}>
+                          {selectedTravel.place}
+                        </Typography>
+                      </Box>
+
+                      {/* Country Card */}
+                      <Box sx={{ 
+                        flex: 1,
+                        p: 2, 
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)', 
+                        borderRadius: 1,
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <PublicIcon sx={{ fontSize: 16, color: '#fff' }} />
+                          <Typography variant="caption" sx={{ color: '#ccc' }}>Country</Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600, fontSize: '0.9rem' }}>
+                          {selectedTravel.country}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="body2" sx={{ color: '#ccc' }}>Coordinates:</Typography>
-                      <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>
-                        {selectedTravel.coordinates?.[0]?.toFixed(2)}, {selectedTravel.coordinates?.[1]?.toFixed(2)}
-                      </Typography>
+
+                    {/* Second Row */}
+                    <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                      {/* Duration Card */}
+                      <Box sx={{ 
+                        flex: 1,
+                        p: 2, 
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)', 
+                        borderRadius: 1,
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <AccessTimeIcon sx={{ fontSize: 16, color: '#fff' }} />
+                          <Typography variant="caption" sx={{ color: '#ccc' }}>Duration</Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600, fontSize: '0.9rem' }}>
+                          {selectedTravel.duration}
+                        </Typography>
+                      </Box>
+
+                      {/* Date Card */}
+                      <Box sx={{ 
+                        flex: 1,
+                        p: 2, 
+                        backgroundColor: 'rgba(255, 255, 255, 0.03)', 
+                        borderRadius: 1,
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                          <CalendarTodayIcon sx={{ fontSize: 16, color: '#fff' }} />
+                          <Typography variant="caption" sx={{ color: '#ccc' }}>Date</Typography>
+                        </Box>
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600, fontSize: '0.9rem' }}>
+                          {selectedTravel.date}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography variant="body2" sx={{ color: '#ccc' }}>Postcode:</Typography>
-                      <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600 }}>{selectedTravel.postcode}</Typography>
-                    </Box>
+                  </Box>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="h6" sx={{ color: '#f59e0b', mb: 2, fontWeight: 600 }}>
+                    Highlights
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {selectedTravel.highlights?.map((highlight, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          p: 1.5,
+                          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                          borderRadius: 1,
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          flex: '1 1 auto',
+                          minWidth: '120px',
+                          textAlign: 'center',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: theme.palette.primary.main
+                          }
+                        }}
+                      >
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 500, fontSize: '0.8rem' }}>
+                          {highlight}
+                        </Typography>
+                      </Box>
+                    ))}
                   </Box>
                 </Box>
 
@@ -565,17 +891,28 @@ const PersonalTravelsSection = () => {
                   </Typography>
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                     {selectedTravel.tags?.map((tag, index) => (
-                      <Chip
+                      <Box
                         key={index}
-                        label={tag}
-                        size="small"
-                        onClick={(e) => e.stopPropagation()}
                         sx={{
-                          backgroundColor: `${theme.palette.secondary.main}15`,
-                          color: theme.palette.secondary.main,
-                          border: `1px solid ${theme.palette.secondary.main}30`
+                          p: 1.5,
+                          backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                          borderRadius: 1,
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          flex: '1 1 auto',
+                          minWidth: '120px',
+                          textAlign: 'center',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                            borderColor: theme.palette.secondary.main
+                          }
                         }}
-                      />
+                      >
+                        <Typography variant="body2" sx={{ color: '#fff', fontWeight: 500, fontSize: '0.8rem' }}>
+                          {tag}
+                        </Typography>
+                      </Box>
                     ))}
                   </Box>
                 </Box>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, Tooltip, Chip, Drawer, Box, useTheme } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, Tooltip, Chip, Drawer, Box, useTheme, Card, CardContent, Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ScrollReveal from '../animations/ScrollReveal';
 
 const AboutSection = () => {
   const theme = useTheme();
@@ -74,9 +75,61 @@ const AboutSection = () => {
         
         if (cachedSkills && cachedEducation && cachedCourses) {
           console.log('Using cached data for AboutSection');
+          
+          // Apply the same sorting logic to cached courses
+          const sortedCachedCourses = cachedCourses.sort((a, b) => {
+            // Special handling for Business certificates to ensure proper progression
+            const aIsBusiness = a.certificationName?.includes('Business');
+            const bIsBusiness = b.certificationName?.includes('Business');
+            
+            if (aIsBusiness && bIsBusiness) {
+              // Extract certificate levels for business certificates
+              const aIsIII = a.certificationName?.includes('Certificate III');
+              const bIsIII = b.certificationName?.includes('Certificate III');
+              const aIsII = a.certificationName?.includes('Certificate II') && !a.certificationName?.includes('Certificate III');
+              const bIsII = b.certificationName?.includes('Certificate II') && !b.certificationName?.includes('Certificate III');
+              const aIsI = a.certificationName?.includes('Certificate I') && !a.certificationName?.includes('Certificate II') && !a.certificationName?.includes('Certificate III');
+              const bIsI = b.certificationName?.includes('Certificate I') && !b.certificationName?.includes('Certificate II') && !b.certificationName?.includes('Certificate III');
+              
+              // Sort in descending order: III -> II -> I (highest level first)
+              if (aIsIII && bIsII) return -1;
+              if (aIsII && bIsIII) return 1;
+              if (aIsIII && bIsI) return -1;
+              if (aIsI && bIsIII) return 1;
+              if (aIsII && bIsI) return -1;
+              if (aIsI && bIsII) return 1;
+            }
+            
+            // Special handling for Hospitality certificates to maintain logical progression
+            const aIsHospitality = a.certificationName?.includes('Hospitality');
+            const bIsHospitality = b.certificationName?.includes('Hospitality');
+            
+            if (aIsHospitality && bIsHospitality) {
+              // Extract certificate levels for hospitality certificates
+              const aIsII = a.certificationName?.includes('Certificate II');
+              const bIsII = b.certificationName?.includes('Certificate II');
+              const aIsI = a.certificationName?.includes('Certificate I') && !a.certificationName?.includes('Certificate II');
+              const bIsI = b.certificationName?.includes('Certificate I') && !b.certificationName?.includes('Certificate II');
+              
+              // Sort in descending order: II -> I (highest level first)
+              if (aIsII && bIsI) return -1;
+              if (aIsI && bIsII) return 1;
+            }
+            
+            // For all other certificates, sort by date (newest first)
+            const getDateForSorting = (dateStr) => {
+              if (!dateStr) return new Date(0);
+              // Handle date ranges by taking the end date
+              const endDate = dateStr.includes(' — ') ? dateStr.split(' — ')[1] : dateStr;
+              return new Date(endDate);
+            };
+            
+            return getDateForSorting(b.date) - getDateForSorting(a.date);
+          });
+          
           setSkills(cachedSkills);
           setEducation(cachedEducation);
-          setCourses(cachedCourses);
+          setCourses(sortedCachedCourses);
           setLoading(false);
           return;
         }
@@ -94,12 +147,69 @@ const AboutSection = () => {
 
         const skillsResult = skillsData.result || [];
         const educationResult = educationData.result || [];
-        const coursesResult = coursesData.result || [];
+        let coursesResult = coursesData.result || [];
+
+        // Sort courses to ensure proper order for animations
+        // Priority order: Certificate III before Certificate II, then by date (newest first)
+        coursesResult = coursesResult.sort((a, b) => {
+          // Special handling for Business certificates to ensure proper progression
+          const aIsBusiness = a.certificationName?.includes('Business');
+          const bIsBusiness = b.certificationName?.includes('Business');
+          
+          if (aIsBusiness && bIsBusiness) {
+            // Extract certificate levels for business certificates
+            const aIsIII = a.certificationName?.includes('Certificate III');
+            const bIsIII = b.certificationName?.includes('Certificate III');
+            const aIsII = a.certificationName?.includes('Certificate II') && !a.certificationName?.includes('Certificate III');
+            const bIsII = b.certificationName?.includes('Certificate II') && !b.certificationName?.includes('Certificate III');
+            const aIsI = a.certificationName?.includes('Certificate I') && !a.certificationName?.includes('Certificate II') && !a.certificationName?.includes('Certificate III');
+            const bIsI = b.certificationName?.includes('Certificate I') && !b.certificationName?.includes('Certificate II') && !b.certificationName?.includes('Certificate III');
+            
+            // Sort in descending order: III -> II -> I (highest level first)
+            if (aIsIII && bIsII) return -1;
+            if (aIsII && bIsIII) return 1;
+            if (aIsIII && bIsI) return -1;
+            if (aIsI && bIsIII) return 1;
+            if (aIsII && bIsI) return -1;
+            if (aIsI && bIsII) return 1;
+          }
+          
+          // Special handling for Hospitality certificates to maintain logical progression
+          const aIsHospitality = a.certificationName?.includes('Hospitality');
+          const bIsHospitality = b.certificationName?.includes('Hospitality');
+          
+          if (aIsHospitality && bIsHospitality) {
+            // Extract certificate levels for hospitality certificates
+            const aIsII = a.certificationName?.includes('Certificate II');
+            const bIsII = b.certificationName?.includes('Certificate II');
+            const aIsI = a.certificationName?.includes('Certificate I') && !a.certificationName?.includes('Certificate II');
+            const bIsI = b.certificationName?.includes('Certificate I') && !b.certificationName?.includes('Certificate II');
+            
+            // Sort in descending order: II -> I (highest level first)
+            if (aIsII && bIsI) return -1;
+            if (aIsI && bIsII) return 1;
+          }
+          
+          // For all other certificates, sort by date (newest first)
+          const getDateForSorting = (dateStr) => {
+            if (!dateStr) return new Date(0);
+            // Handle date ranges by taking the end date
+            const endDate = dateStr.includes(' — ') ? dateStr.split(' — ')[1] : dateStr;
+            return new Date(endDate);
+          };
+          
+          return getDateForSorting(b.date) - getDateForSorting(a.date);
+        });
 
         // Cache the results
         setCachedData('aboutSection_skills', skillsResult);
         setCachedData('aboutSection_education', educationResult);
         setCachedData('aboutSection_courses', coursesResult);
+
+        // Log the course order for debugging
+        console.log('Certificate order:', coursesResult.map((course, index) => 
+          `${index}: ${course.certificationName} (delay: ${200 + (index * 100)}ms)`
+        ));
 
         setSkills(skillsResult);
         setEducation(educationResult);
@@ -193,130 +303,143 @@ const AboutSection = () => {
   return (
     <section id="about" className="content-section">
       <div className="container">
-        <h2 className="section-title">Education</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title">Education</h2>
+        </ScrollReveal>
         <div className="experience-list">
           {education.map((edu, index) => (
-            <div key={index} className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleEducationClick(edu)}>
-              <div className="experience-header">
-                <h3 className="experience-title">{edu.courseName}</h3>
-                <span className="experience-period">{edu.date}</span>
-              </div>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between' 
-              }}>
-                <div>
-                  <p className="experience-company">{edu.institutionName}{edu.institutionLocation ? `, ${edu.institutionLocation}` : ''}</p>
+            <ScrollReveal key={index} direction="left" delay={200 + (index * 100)}>
+              <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleEducationClick(edu)}>
+                <div className="experience-header">
+                  <h3 className="experience-title">{edu.courseName}</h3>
+                  <span className="experience-period">{edu.date}</span>
                 </div>
-                {edu.institutionLogo && (
-                  <img
-                    src={edu.institutionLogo}
-                    alt={edu.institutionName}
-                    style={{
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '12px',
-                      objectFit: 'contain'
-                    }}
-                  />
-                )}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between' 
+                }}>
+                  <div>
+                    <p className="experience-company">{edu.institutionName}{edu.institutionLocation ? `, ${edu.institutionLocation}` : ''}</p>
+                  </div>
+                  {edu.institutionLogo && (
+                    <img
+                      src={edu.institutionLogo}
+                      alt={edu.institutionName}
+                      style={{
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '12px',
+                        objectFit: 'contain'
+                      }}
+                    />
+                  )}
+                </div>
+                <p className="experience-description">
+                  {edu.shortDescription}
+                  {(edu.completedUnits && edu.completedUnits.length > 0) || (edu.inProgressUnits && edu.inProgressUnits.length > 0) ? (
+                    <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click to view detailed coursework.</span>
+                  ) : null}
+                </p>
               </div>
-              <p className="experience-description">
-                {edu.shortDescription}
-                {(edu.completedUnits && edu.completedUnits.length > 0) || (edu.inProgressUnits && edu.inProgressUnits.length > 0) ? (
-                  <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click to view detailed coursework.</span>
-                ) : null}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
         
-        <h2 className="section-title" style={{ marginTop: '3rem' }}>Skills</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title" style={{ marginTop: '3rem' }}>Skills</h2>
+        </ScrollReveal>
         <div className="about-skills">
-          <div 
-            className="skills-grid"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '1rem',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: '1.5rem'
-            }}
-          >
-            {skills.map((skill, index) =>
-              <div
-                key={index}
-                className="skill-item"
-                style={{
-                  padding: '0.75rem 1rem',
-                  border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
-                  borderRadius: '8px',
-                  backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
-                  textAlign: 'center',
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  color: '#e5e7eb',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                  minWidth: '180px',
-                  flex: '0 0 auto'
-                }}
-                onClick={() => handleSkillClick(skill)}
-                onMouseEnter={(e) => {
-                  e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
-                  e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
-                  e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
-                  e.target.style.transform = 'translateY(0)';
-                }}
-              >
-                {skill.skillName}
-              </div>
-            )}
-          </div>
+          <ScrollReveal direction="up" delay={200}>
+            <div 
+              className="skills-grid"
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '1.5rem'
+              }}
+            >
+              {skills.map((skill, index) =>
+                <ScrollReveal key={index} direction="scale" delay={300 + (index * 50)}>
+                  <div
+                    className="skill-item"
+                    style={{
+                      padding: '0.75rem 1rem',
+                      border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
+                      borderRadius: '8px',
+                      backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
+                      textAlign: 'center',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      color: '#e5e7eb',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer',
+                      minWidth: '180px',
+                      flex: '0 0 auto'
+                    }}
+                    onClick={() => handleSkillClick(skill)}
+                    onMouseEnter={(e) => {
+                      e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
+                      e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
+                      e.target.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
+                      e.target.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
+                      e.target.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    {skill.skillName}
+                  </div>
+                </ScrollReveal>
+              )}
+            </div>
+          </ScrollReveal>
         </div>
         
-        <h2 className="section-title" style={{ marginTop: '3rem' }}>Professional Certifications</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title" style={{ marginTop: '3rem' }}>Professional Certifications</h2>
+        </ScrollReveal>
         <div className="experience-list">
           {courses.map((course, index) => (
-            <div key={index} className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick(course)}>
-              <div className="experience-header">
-                <h3 className="experience-title">{course.certificationName}</h3>
-                <span className="experience-period">{course.date}</span>
-              </div>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between' 
-              }}>
-                <div>
-                  <p className="experience-company">{course.institutionName}</p>
+            <ScrollReveal key={index} direction="right" delay={200 + (index * 100)}>
+              <div className="experience-item" style={{ cursor: 'pointer' }} onClick={() => handleCertificationClick(course)}>
+                <div className="experience-header">
+                  <h3 className="experience-title">{course.certificationName}</h3>
+                  <span className="experience-period">{course.date}</span>
                 </div>
-                {course.institutionLogo && (
-                  <img
-                    src={course.institutionLogo}
-                    alt={course.institutionName}
-                    style={{
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '12px',
-                      objectFit: 'contain'
-                    }}
-                  />
-                )}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between' 
+                }}>
+                  <div>
+                    <p className="experience-company">{course.institutionName}</p>
+                  </div>
+                  {course.institutionLogo && (
+                    <img
+                      src={course.institutionLogo}
+                      alt={course.institutionName}
+                      style={{
+                        width: '72px',
+                        height: '72px',
+                        borderRadius: '12px',
+                        objectFit: 'contain'
+                      }}
+                    />
+                  )}
+                </div>
+                <p className="experience-description">
+                  {course.description}
+                  {((course.completedUnits && course.completedUnits.length > 0) || (course.inProgressUnits && course.inProgressUnits.length > 0)) && (
+                    <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click for details.</span>
+                  )}
+                </p>
               </div>
-              <p className="experience-description">
-                {course.description}
-                {((course.completedUnits && course.completedUnits.length > 0) || (course.inProgressUnits && course.inProgressUnits.length > 0)) && (
-                  <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click for details.</span>
-                )}
-              </p>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -328,6 +451,7 @@ const AboutSection = () => {
         maxWidth="lg"
         fullWidth={true}
         PaperProps={{
+          className: 'animated-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
@@ -336,6 +460,7 @@ const AboutSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
@@ -372,7 +497,7 @@ const AboutSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '1.5rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ padding: '1.5rem' }}>
           {selectedEducation && (
             <div>
               <Typography 
@@ -508,6 +633,7 @@ const AboutSection = () => {
         maxWidth="md"
         fullWidth={true}
         PaperProps={{
+          className: 'animated-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
@@ -516,6 +642,7 @@ const AboutSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
@@ -552,7 +679,7 @@ const AboutSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '1.5rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ padding: '1.5rem' }}>
           {selectedCertification && (
             <div>
               <Typography 
@@ -641,6 +768,7 @@ const AboutSection = () => {
         onClose={handleUnitDrawerClose}
         style={{ zIndex: 9999 }}
         PaperProps={{
+          className: 'animated-drawer-paper',
           style: {
             width: '400px',
             backgroundColor: '#1a1a1a',
@@ -652,6 +780,7 @@ const AboutSection = () => {
       >
         <Box 
           role="presentation" 
+          className="dialog-content-stagger"
           style={{ 
             padding: '1.5rem',
             height: '100%',
@@ -745,6 +874,7 @@ const AboutSection = () => {
         maxWidth="md"
         fullWidth={true}
         PaperProps={{
+          className: 'animated-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
@@ -753,6 +883,7 @@ const AboutSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
@@ -774,7 +905,7 @@ const AboutSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '1.5rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ padding: '1.5rem' }}>
           {selectedSkill && (
             <div>
               <Typography 

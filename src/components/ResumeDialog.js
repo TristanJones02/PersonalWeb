@@ -110,10 +110,10 @@ const ResumeDialog = ({ open, onClose }) => {
       maxWidth="lg"
       fullWidth={true}
       PaperProps={{
-        className: 'resume-dialog-paper'
+        className: 'resume-dialog-paper animated-dialog-paper'
       }}
     >
-      <DialogTitle className="resume-dialog-title">
+      <DialogTitle className="resume-dialog-title dialog-content-stagger">
         Curriculum Vitae - Tristan Jones
         <IconButton
           aria-label="download"
@@ -131,7 +131,7 @@ const ResumeDialog = ({ open, onClose }) => {
         </IconButton>
       </DialogTitle>
       
-      <DialogContent className="resume-dialog-content">
+      <DialogContent className="resume-dialog-content dialog-content-stagger">
         {/* PDF Viewer Controls */}
         <Box className="pdf-controls">
           <Box className="pdf-navigation">

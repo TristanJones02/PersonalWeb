@@ -88,10 +88,10 @@ const EmailDialogue = ({ open, onClose }) => {
       maxWidth="md"
       fullWidth={true}
       PaperProps={{
-        className: 'email-dialogue-paper'
+        className: 'email-dialogue-paper animated-dialog-paper'
       }}
     >
-      <DialogTitle className="email-dialogue-title">
+      <DialogTitle className="email-dialogue-title dialog-content-stagger">
         Get In Touch
         <IconButton
           aria-label="close"
@@ -103,7 +103,7 @@ const EmailDialogue = ({ open, onClose }) => {
       </DialogTitle>
       
       <form onSubmit={handleSubmit}>
-        <DialogContent className="email-dialogue-content">
+        <DialogContent className="email-dialogue-content dialog-content-stagger">
           <div className="email-dialogue-grid">
             {/* First row: Name and Company */}
             <div className="email-dialogue-row">
@@ -179,7 +179,7 @@ const EmailDialogue = ({ open, onClose }) => {
           </div>
         </DialogContent>
         
-        <DialogActions className="email-dialogue-actions">
+        <DialogActions className="email-dialogue-actions dialog-content-stagger">
           <Button
             onClick={onClose}
             variant="outlined"

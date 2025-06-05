@@ -8,6 +8,7 @@ import MainContent from './components/MainContent';
 import ScrollIndicator from './components/ScrollIndicator';
 import colorThemes from './colorThemes.json';
 import './App.css';
+import './components/animations/DialogAnimations.css';
 
 const App = () => {
   const [activeSection, setActiveSection] = useState('home');

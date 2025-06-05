@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme, Chip, Tooltip, Box } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ScrollReveal from '../animations/ScrollReveal';
 
-const ExperienceItem = ({ job, onClick }) => {
+const ExperienceItem = ({ job, onClick, animationDelay = 0 }) => {
   const theme = useTheme();
   
   // Define fallback data for jobs since the JSON data is incomplete
@@ -34,56 +35,58 @@ const ExperienceItem = ({ job, onClick }) => {
   const fallback = jobFallbacks[job.index] || {};
   
   return (
-    <div className="experience-item" style={{ cursor: 'pointer' }} onClick={onClick}>
-      <div className="experience-header">
-        <h3 className="experience-title">{job.jobTitle || fallback.jobTitle}</h3>
-        <span className="experience-period">{job.date || fallback.date}</span>
-      </div>
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between' 
-      }}>
-        <div>
-          <p className="experience-company">{job.companyName || fallback.companyName}</p>
-          {job.location && <p className="experience-location">{job.location}</p>}
+    <ScrollReveal direction="right" delay={animationDelay}>
+      <div className="experience-item" style={{ cursor: 'pointer' }} onClick={onClick}>
+        <div className="experience-header">
+          <h3 className="experience-title">{job.jobTitle || fallback.jobTitle}</h3>
+          <span className="experience-period">{job.date || fallback.date}</span>
         </div>
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          alignItems: 'center'
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between' 
         }}>
-          {(job.companyLogo || fallback.companyLogo) && (
-            <img
-              src={job.companyLogo || fallback.companyLogo}
-              alt={job.companyName || fallback.companyName}
-              style={{
-                width: '72px',
-                height: '72px',
-                borderRadius: '12px',
-                objectFit: 'contain'
-              }}
-            />
-          )}
-          {fallback.companyLogo2 && (
-            <img
-              src={fallback.companyLogo2}
-              alt={job.companyName || fallback.companyName}
-              style={{
-                width: '72px',
-                height: '72px',
-                borderRadius: '12px',
-                objectFit: 'contain'
-              }}
-            />
-          )}
+          <div>
+            <p className="experience-company">{job.companyName || fallback.companyName}</p>
+            {job.location && <p className="experience-location">{job.location}</p>}
+          </div>
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'center'
+          }}>
+            {(job.companyLogo || fallback.companyLogo) && (
+              <img
+                src={job.companyLogo || fallback.companyLogo}
+                alt={job.companyName || fallback.companyName}
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '12px',
+                  objectFit: 'contain'
+                }}
+              />
+            )}
+            {fallback.companyLogo2 && (
+              <img
+                src={fallback.companyLogo2}
+                alt={job.companyName || fallback.companyName}
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '12px',
+                  objectFit: 'contain'
+                }}
+              />
+            )}
+          </div>
         </div>
+        <p className="experience-description">
+          {job.shortDescription || fallback.shortDescription}
+          <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click for detailed experience.</span>
+        </p>
       </div>
-      <p className="experience-description">
-        {job.shortDescription || fallback.shortDescription}
-        <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click for detailed experience.</span>
-      </p>
-    </div>
+    </ScrollReveal>
   );
 };
 
@@ -333,13 +336,16 @@ const ExperienceSection = () => {
   return (
     <section id="experience" className="content-section">
       <div className="container">
-        <h2 className="section-title">Professional Experience</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title">Professional Experience</h2>
+        </ScrollReveal>
         <div className="experience-list">
           {jobs.map((job, index) => (
             <ExperienceItem
               key={index}
               job={job}
               onClick={() => handleExperienceClick(job)}
+              animationDelay={200 + (index * 150)}
             />
           ))}
         </div>
@@ -352,6 +358,7 @@ const ExperienceSection = () => {
         maxWidth="lg"
         fullWidth={true}
         PaperProps={{
+          className: 'animated-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
@@ -360,6 +367,7 @@ const ExperienceSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
@@ -396,7 +404,7 @@ const ExperienceSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '1.5rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ padding: '1.5rem' }}>
           {selectedExperience && experienceDetails[selectedExperience.index] && (
             <div>
               <div style={{ marginBottom: '2rem' }}>
@@ -549,19 +557,6 @@ const ExperienceSection = () => {
             </div>
           )}
         </DialogContent>
-        
-        <DialogActions style={{ padding: '1rem 1.5rem' }}>
-          <Button 
-            onClick={handleExperienceModalClose}
-            style={{
-              color: theme.palette.primary.main,
-              borderColor: theme.palette.primary.main
-            }}
-            variant="outlined"
-          >
-            Close
-          </Button>
-        </DialogActions>
       </Dialog>
     </section>
   );

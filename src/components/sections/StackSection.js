@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ScrollReveal from '../animations/ScrollReveal';
 
 const StackSection = () => {
   const theme = useTheme();
@@ -127,123 +128,102 @@ const StackSection = () => {
   return (
     <section id="stack" className="content-section">
       <div className="container">
-        <h2 className="section-title">Tech Stack</h2>
+        <ScrollReveal direction="up" delay={100}>
+          <h2 className="section-title">Tech Stack</h2>
+        </ScrollReveal>
         
-        {techCategories.map((category) => (
+        {techCategories.map((category, categoryIndex) => (
           <div key={category.categoryName} style={{ marginBottom: '3rem' }}>
-            <h3 
-              style={{
-                color: theme.palette.secondary.main,
-                fontSize: '1.5rem',
-                fontWeight: '600',
-                marginBottom: '1.5rem',
-                textAlign: 'center'
-              }}
-            >
-              {category.categoryName}
-            </h3>
+            <ScrollReveal direction="up" delay={200 + (categoryIndex * 100)}>
+              <h3 
+                style={{
+                  color: theme.palette.secondary.main,
+                  fontSize: '1.5rem',
+                  fontWeight: '600',
+                  marginBottom: '1.5rem',
+                  textAlign: 'center'
+                }}
+              >
+                {category.categoryName}
+              </h3>
+            </ScrollReveal>
             
-            <div 
-              className="stack-grid"
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '1.25rem',
-                justifyContent: 'center',
-                maxWidth: '900px',
-                margin: '0 auto'
-              }}
-            >
-              {category.technologies && category.technologies.map(tech =>
-                <div
-                  key={tech.name}
-                  className="stack-item"
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '2rem 1rem',
-                    border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
-                    borderRadius: '12px',
-                    backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
-                    textAlign: 'center',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer',
-                    minHeight: '140px',
-                    position: 'relative',
-                    flex: '0 0 200px',
-                    minWidth: '140px',
-                    maxWidth: '220px'
-                  }}
-                  onClick={() => handleTechClick(tech)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
-                    e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    // Show text on hover
-                    const textElement = e.currentTarget.querySelector('.stack-text');
-                    if (textElement) {
-                      textElement.style.opacity = '1';
-                      textElement.style.transform = 'translateX(-50%) translateY(0)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
-                    e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    // Hide text when not hovering
-                    const textElement = e.currentTarget.querySelector('.stack-text');
-                    if (textElement) {
-                      textElement.style.opacity = '0';
-                      textElement.style.transform = 'translateX(-50%) translateY(20px)';
-                    }
-                  }}
-                >
-                  {tech.logoUrl && (
-                    <img
-                      src={tech.logoUrl}
-                      alt={tech.name}
-                      style={{
-                        width: '64px',
-                        height: '64px',
-                        objectFit: 'contain',
-                        marginBottom: '0.75rem'
-                      }}
-                    />
-                  )}
-                  
-                  <h3 style={{
-                    margin: '0',
-                    fontSize: '1rem',
-                    fontWeight: '600',
-                    color: '#e5e7eb'
-                  }}>
-                    {tech.name}
-                  </h3>
-
-                  {/* Hidden text that appears on hover */}
-                  <div
-                    className="stack-text"
-                    style={{
-                      position: 'absolute',
-                      bottom: '10px',
-                      left: '50%',
-                      transform: 'translateX(-50%) translateY(20px)',
-                      opacity: '0',
-                      transition: 'all 0.3s ease',
-                      fontSize: '0.75rem',
-                      color: theme.palette.primary.main,
-                      fontWeight: '500',
-                      textAlign: 'center',
-                      pointerEvents: 'none'
-                    }}
+            <ScrollReveal direction="up" delay={300 + (categoryIndex * 100)}>
+              <div 
+                className="stack-grid"
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '1.25rem',
+                  justifyContent: 'center',
+                  maxWidth: '900px',
+                  margin: '0 auto'
+                }}
+              >
+                {category.technologies && category.technologies.map((tech, techIndex) =>
+                  <ScrollReveal 
+                    key={tech.name}
+                    direction="scale" 
+                    delay={400 + (categoryIndex * 100) + (techIndex * 50)}
                   >
-                    Click for details
-                  </div>
-                </div>
-              )}
-            </div>
+                    <div
+                      className="stack-item"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '2rem 1rem',
+                        border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
+                        borderRadius: '12px',
+                        backgroundColor: hexToRgba(theme.palette.primary.main, 0.05),
+                        textAlign: 'center',
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer',
+                        minHeight: '140px',
+                        position: 'relative',
+                        flex: '0 0 200px',
+                        minWidth: '140px',
+                        maxWidth: '220px'
+                      }}
+                      onClick={() => handleTechClick(tech)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.6);
+                        e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.1);
+                        e.currentTarget.style.transform = 'translateY(-4px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = hexToRgba(theme.palette.primary.main, 0.3);
+                        e.currentTarget.style.backgroundColor = hexToRgba(theme.palette.primary.main, 0.05);
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      {tech.logoUrl && (
+                        <img
+                          src={tech.logoUrl}
+                          alt={tech.name}
+                          style={{
+                            width: '64px',
+                            height: '64px',
+                            objectFit: 'contain',
+                            marginBottom: '0.75rem'
+                          }}
+                        />
+                      )}
+                      
+                      <h3 style={{
+                        margin: '0',
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        color: '#e5e7eb'
+                      }}>
+                        {tech.name}
+                      </h3>
+                    </div>
+                  </ScrollReveal>
+                )}
+              </div>
+            </ScrollReveal>
           </div>
         ))}
       </div>
@@ -255,6 +235,7 @@ const StackSection = () => {
         maxWidth="md"
         fullWidth={true}
         PaperProps={{
+          className: 'animated-dialog-paper',
           style: {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${hexToRgba(theme.palette.primary.main, 0.3)}`,
@@ -263,6 +244,7 @@ const StackSection = () => {
         }}
       >
         <DialogTitle 
+          className="dialog-content-stagger"
           style={{ 
             color: '#e5e7eb',
             borderBottom: `1px solid ${hexToRgba(theme.palette.primary.main, 0.2)}`,
@@ -298,7 +280,7 @@ const StackSection = () => {
           </IconButton>
         </DialogTitle>
         
-        <DialogContent style={{ padding: '1.5rem' }}>
+        <DialogContent className="dialog-content-stagger" style={{ padding: '1.5rem' }}>
           {selectedTech && (
             <Typography 
               variant="body1" 
@@ -311,19 +293,6 @@ const StackSection = () => {
             </Typography>
           )}
         </DialogContent>
-        
-        <DialogActions style={{ padding: '1rem 1.5rem' }}>
-          <Button 
-            onClick={handleTechModalClose}
-            style={{
-              color: theme.palette.primary.main,
-              borderColor: theme.palette.primary.main
-            }}
-            variant="outlined"
-          >
-            Close
-          </Button>
-        </DialogActions>
       </Dialog>
     </section>
   );
