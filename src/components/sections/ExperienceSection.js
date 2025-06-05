@@ -98,7 +98,7 @@ const ExperienceSection = () => {
   const getDataUrl = (filename) => {
     const isProduction = process.env.NODE_ENV === 'production' || window.location.hostname === 'tristanj.dev';
     const baseUrl = isProduction 
-      ? 'https://tristanj.dev/cache-data'
+      ? 'https://tristanj.dev/api_cache'
       : 'api_cache';
     return `${baseUrl}/${filename}`;
   };
