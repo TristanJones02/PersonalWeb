@@ -11,3 +11,4 @@ yarn-error.log*
 build/
 dist/
 api_cache/
+public/api_cache/

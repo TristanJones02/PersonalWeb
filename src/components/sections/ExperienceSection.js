@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-const ExperienceItem = ({ title, company, period, description, location, companyIcon, companyIcon2, onClick }) => {
+const ExperienceItem = ({ job, onClick }) => {
   const theme = useTheme();
+  
+  // Define fallback data for jobs since the JSON data is incomplete
+  const jobFallbacks = {
+    0: { // First job (Perth • Hybrid Role)
+      jobTitle: 'IT & Operations Manager',
+      companyName: 'Pet Fresh',
+      date: 'November 2023 — Present',
+      shortDescription: 'Maintained and developed systems & integrations between IT systems across 3 locations, supporting all business systems from eCommerce to POS. Implemented various off-the-shelf and custom developed systems, including a Warehouse Management System that assists in warehouse operations and stock forecasting.',
+      companyLogo: '/company_icons/Pet_Fresh.png'
+    },
+    1: { // Second job (Whistler, BC, Canada)
+      jobTitle: 'In Room Dining (Room Service) Server',
+      companyName: 'Fairmont Whistler Hotel',
+      date: 'November 2023 — December 2024',
+      shortDescription: 'Delivered exceptional 5-star hotel experience directly to guest rooms, upholding the world-renowned standards of the Fairmont brand while maintaining the highest level of customer service excellence.',
+      companyLogo: '/company_icons/Accor.png',
+      companyLogo2: '/company_icons/Fairmont_Whis.png'
+    },
+    2: { // Third job (Perth)
+      jobTitle: 'Customer Service Representative & Retail Attendant',
+      companyName: 'Pet Fresh',
+      date: 'August 2017 — November 2023',
+      shortDescription: 'Assisted customers by providing expert product recommendations for dogs with allergies, varying body conditions, and breed-specific nutritional needs. Delivered exceptional customer service while educating pet owners on locally-sourced, vet-formulated pet food solutions.',
+      companyLogo: '/company_icons/Pet_Fresh.png'
+    }
+  };
+  
+  const fallback = jobFallbacks[job.index] || {};
   
   return (
     <div className="experience-item" style={{ cursor: 'pointer' }} onClick={onClick}>
       <div className="experience-header">
-        <h3 className="experience-title">{title}</h3>
-        <span className="experience-period">{period}</span>
+        <h3 className="experience-title">{job.jobTitle || fallback.jobTitle}</h3>
+        <span className="experience-period">{job.date || fallback.date}</span>
       </div>
       <div style={{ 
         display: 'flex', 
@@ -17,18 +45,18 @@ const ExperienceItem = ({ title, company, period, description, location, company
         justifyContent: 'space-between' 
       }}>
         <div>
-          <p className="experience-company">{company}</p>
-          {location && <p className="experience-location">{location}</p>}
+          <p className="experience-company">{job.companyName || fallback.companyName}</p>
+          {job.location && <p className="experience-location">{job.location}</p>}
         </div>
         <div style={{
           display: 'flex',
           gap: '8px',
           alignItems: 'center'
         }}>
-          {companyIcon && (
+          {(job.companyLogo || fallback.companyLogo) && (
             <img
-              src={companyIcon}
-              alt={company}
+              src={job.companyLogo || fallback.companyLogo}
+              alt={job.companyName || fallback.companyName}
               style={{
                 width: '72px',
                 height: '72px',
@@ -37,10 +65,10 @@ const ExperienceItem = ({ title, company, period, description, location, company
               }}
             />
           )}
-          {companyIcon2 && (
+          {fallback.companyLogo2 && (
             <img
-              src={companyIcon2}
-              alt={company}
+              src={fallback.companyLogo2}
+              alt={job.companyName || fallback.companyName}
               style={{
                 width: '72px',
                 height: '72px',
@@ -51,7 +79,10 @@ const ExperienceItem = ({ title, company, period, description, location, company
           )}
         </div>
       </div>
-      <p className="experience-description">{description} <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}>Click for detailed experience.</span></p>
+      <p className="experience-description">
+        {job.shortDescription || fallback.shortDescription}
+        <span style={{ color: theme.palette.primary.main, fontWeight: '500' }}> Click for detailed experience.</span>
+      </p>
     </div>
   );
 };
@@ -60,6 +91,89 @@ const ExperienceSection = () => {
   const theme = useTheme();
   const [selectedExperience, setSelectedExperience] = useState(null);
   const [experienceModalOpen, setExperienceModalOpen] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Environment-based data URLs
+  const getDataUrl = (filename) => {
+    const isProduction = process.env.NODE_ENV === 'production' || window.location.hostname === 'tristanj.dev';
+    const baseUrl = isProduction 
+      ? 'https://tristanj.dev/cache-data'
+      : 'api_cache';
+    return `${baseUrl}/${filename}`;
+  };
+
+  // Cache utility functions
+  const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+  
+  const getCachedData = (key) => {
+    try {
+      const cached = localStorage.getItem(key);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      const isExpired = Date.now() - timestamp > CACHE_DURATION;
+      
+      if (isExpired) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.warn(`Error reading cache for ${key}:`, error);
+      return null;
+    }
+  };
+  
+  const setCachedData = (key, data) => {
+    try {
+      const cacheItem = {
+        data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(key, JSON.stringify(cacheItem));
+    } catch (error) {
+      console.warn(`Error setting cache for ${key}:`, error);
+    }
+  };
+
+  // Load data from JSON file with caching
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Check for cached data first
+        const cachedJobs = getCachedData('experienceSection_jobs');
+        
+        if (cachedJobs) {
+          console.log('Using cached data for ExperienceSection');
+          setJobs(cachedJobs);
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Fetching fresh data for ExperienceSection');
+        const response = await fetch(getDataUrl('jobs.json'));
+        const data = await response.json();
+        // Add index to each job for fallback mapping
+        const jobsWithIndex = (data.result || []).map((job, index) => ({
+          ...job,
+          index
+        }));
+        
+        // Cache the result
+        setCachedData('experienceSection_jobs', jobsWithIndex);
+        
+        setJobs(jobsWithIndex);
+      } catch (error) {
+        console.error('Error loading jobs data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   // Utility function to convert hex to rgba
   const hexToRgba = (hex, alpha) => {
@@ -71,8 +185,9 @@ const ExperienceSection = () => {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   };
 
+  // Detailed experience data (kept as fallback since the JSON data doesn't include this level of detail)
   const experienceDetails = {
-    'it-operations-manager': {
+    0: { // IT & Operations Manager
       title: 'IT & Operations Manager',
       company: 'Pet Fresh',
       location: 'Perth • Hybrid Role',
@@ -109,7 +224,7 @@ const ExperienceSection = () => {
         'Achieved 99.9% system uptime across all critical business applications'
       ]
     },
-    'room-service-server': {
+    1: { // Room Service Server
       title: 'In Room Dining (Room Service) Server',
       company: 'Fairmont Whistler Hotel',
       location: 'Whistler, BC, Canada',
@@ -148,7 +263,7 @@ const ExperienceSection = () => {
         'Successfully served VIP guests and handled special event requirements'
       ]
     },
-    'customer-service-rep': {
+    2: { // Customer Service Rep
       title: 'Customer Service Representative & Retail Attendant',
       company: 'Pet Fresh',
       location: 'Perth',
@@ -189,8 +304,8 @@ const ExperienceSection = () => {
     }
   };
 
-  const handleExperienceClick = (experienceKey) => {
-    setSelectedExperience(experienceKey);
+  const handleExperienceClick = (job) => {
+    setSelectedExperience(job);
     setTimeout(() => {
       setExperienceModalOpen(true);
     }, 50);
@@ -203,39 +318,30 @@ const ExperienceSection = () => {
     }, 300);
   };
 
+  if (loading) {
+    return (
+      <section id="experience" className="content-section">
+        <div className="container">
+          <Typography variant="h4" style={{ color: '#e5e7eb', textAlign: 'center' }}>
+            Loading...
+          </Typography>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="experience" className="content-section">
       <div className="container">
         <h2 className="section-title">Professional Experience</h2>
         <div className="experience-list">
-          <ExperienceItem
-            title="IT & Operations Manager"
-            company="Pet Fresh"
-            location="Perth • Hybrid Role"
-            period="November 2023 — Present"
-            description="Maintained and developed systems & integrations between IT systems across 3 locations, supporting all business systems from eCommerce to POS. Implemented various off-the-shelf and custom developed systems, including a Warehouse Management System that assists in warehouse operations and stock forecasting."
-            companyIcon="/company_icons/Pet_Fresh.png"
-            onClick={() => handleExperienceClick('it-operations-manager')}
-          />
-          <ExperienceItem
-            title="In Room Dining (Room Service) Server"
-            company="Fairmont Whistler Hotel"
-            location="Whistler, BC, Canada"
-            period="November 2023 — December 2024"
-            description="Delivered exceptional 5-star hotel experience directly to guest rooms, upholding the world-renowned standards of the Fairmont brand while maintaining the highest level of customer service excellence."
-            companyIcon="/company_icons/Accor.png"
-            companyIcon2="/company_icons/Fairmont_Whis.png"
-            onClick={() => handleExperienceClick('room-service-server')}
-          />
-          <ExperienceItem
-            title="Customer Service Representative & Retail Attendant"
-            company="Pet Fresh"
-            location="Perth"
-            period="August 2017 — November 2023"
-            description="Assisted customers by providing expert product recommendations for dogs with allergies, varying body conditions, and breed-specific nutritional needs. Delivered exceptional customer service while educating pet owners on locally-sourced, vet-formulated pet food solutions."
-            companyIcon="/company_icons/Pet_Fresh.png"
-            onClick={() => handleExperienceClick('customer-service-rep')}
-          />
+          {jobs.map((job, index) => (
+            <ExperienceItem
+              key={index}
+              job={job}
+              onClick={() => handleExperienceClick(job)}
+            />
+          ))}
         </div>
       </div>
 
@@ -265,8 +371,8 @@ const ExperienceSection = () => {
         >
           {selectedExperience && (
             <img
-              src={selectedExperience === 'room-service-server' ? "/company_icons/Fairmont_Whis.png" : "/company_icons/Pet_Fresh.png"}
-              alt={selectedExperience === 'room-service-server' ? "Fairmont Whistler Hotel" : "Pet Fresh"}
+              src={selectedExperience.index === 1 ? "/company_icons/Fairmont_Whis.png" : "/company_icons/Pet_Fresh.png"}
+              alt={selectedExperience.index === 1 ? "Fairmont Whistler Hotel" : "Pet Fresh"}
               style={{
                 width: '40px',
                 height: '40px',
@@ -275,7 +381,7 @@ const ExperienceSection = () => {
               }}
             />
           )}
-          {selectedExperience && experienceDetails[selectedExperience]?.title}
+          {selectedExperience && experienceDetails[selectedExperience.index]?.title}
           <IconButton
             aria-label="close"
             onClick={handleExperienceModalClose}
@@ -291,7 +397,7 @@ const ExperienceSection = () => {
         </DialogTitle>
         
         <DialogContent style={{ padding: '1.5rem' }}>
-          {selectedExperience && (
+          {selectedExperience && experienceDetails[selectedExperience.index] && (
             <div>
               <div style={{ marginBottom: '2rem' }}>
                 <Typography 
@@ -302,7 +408,7 @@ const ExperienceSection = () => {
                     fontWeight: '600'
                   }}
                 >
-                  {experienceDetails[selectedExperience]?.company} • {experienceDetails[selectedExperience]?.location}
+                  {experienceDetails[selectedExperience.index].company} • {experienceDetails[selectedExperience.index].location}
                 </Typography>
                 
                 <Typography 
@@ -312,7 +418,7 @@ const ExperienceSection = () => {
                     marginBottom: '1.5rem'
                   }}
                 >
-                  {experienceDetails[selectedExperience]?.period}
+                  {experienceDetails[selectedExperience.index].period}
                 </Typography>
 
                 <Typography 
@@ -323,7 +429,7 @@ const ExperienceSection = () => {
                     lineHeight: '1.6'
                   }}
                 >
-                  {experienceDetails[selectedExperience]?.description}
+                  {experienceDetails[selectedExperience.index].description}
                 </Typography>
               </div>
 
@@ -345,7 +451,7 @@ const ExperienceSection = () => {
                   lineHeight: '1.6',
                   margin: 0
                 }}>
-                  {experienceDetails[selectedExperience]?.keyResponsibilities.map((responsibility, index) => (
+                  {experienceDetails[selectedExperience.index].keyResponsibilities.map((responsibility, index) => (
                     <li key={index} style={{ marginBottom: '0.5rem' }}>
                       {responsibility}
                     </li>
@@ -370,7 +476,7 @@ const ExperienceSection = () => {
                   flexWrap: 'wrap', 
                   gap: '0.5rem'
                 }}>
-                  {experienceDetails[selectedExperience]?.skillsUsed.map((skill, index) => (
+                  {experienceDetails[selectedExperience.index].skillsUsed.map((skill, index) => (
                     <span
                       key={index}
                       style={{
@@ -407,7 +513,7 @@ const ExperienceSection = () => {
                   lineHeight: '1.6',
                   margin: 0
                 }}>
-                  {experienceDetails[selectedExperience]?.keyLearnings.map((learning, index) => (
+                  {experienceDetails[selectedExperience.index].keyLearnings.map((learning, index) => (
                     <li key={index} style={{ marginBottom: '0.5rem' }}>
                       {learning}
                     </li>
@@ -433,7 +539,7 @@ const ExperienceSection = () => {
                   lineHeight: '1.6',
                   margin: 0
                 }}>
-                  {experienceDetails[selectedExperience]?.achievements.map((achievement, index) => (
+                  {(selectedExperience.keyAchievements || experienceDetails[selectedExperience.index].achievements).map((achievement, index) => (
                     <li key={index} style={{ marginBottom: '0.5rem' }}>
                       {achievement}
                     </li>
@@ -447,11 +553,11 @@ const ExperienceSection = () => {
         <DialogActions style={{ padding: '1rem 1.5rem' }}>
           <Button 
             onClick={handleExperienceModalClose}
-            variant="contained"
             style={{
-              backgroundColor: theme.palette.primary.main,
-              color: 'white'
+              color: theme.palette.primary.main,
+              borderColor: theme.palette.primary.main
             }}
+            variant="outlined"
           >
             Close
           </Button>

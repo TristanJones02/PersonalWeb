@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton, Typography, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -6,102 +6,85 @@ const StackSection = () => {
   const theme = useTheme();
   const [selectedTech, setSelectedTech] = useState(null);
   const [techModalOpen, setTechModalOpen] = useState(false);
+  const [techCategories, setTechCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const techCategories = {
-    'Web Technologies': [
-      { name: 'React', icon: '/stack_icons/react.png' },
-      { name: 'Material UI', icon: '/stack_icons/material.png' },
-      { name: 'Electron', icon: '/stack_icons/electron.png' },
-      { name: 'Wordpress', icon: '/stack_icons/wordpress.png' },
-      { name: 'WooCommerce', icon: '/stack_icons/woocommerce.png' }
-    ],
-    'Cloud Infrastructure': [
-      { name: 'Digital Ocean', icon: '/stack_icons/digitalocean.png' },
-      { name: 'Cloudflare', icon: '/stack_icons/cloudflare.png' },
-      { name: 'Auth0', icon: '/stack_icons/auth0.png' },
-      { name: 'Postgresql', icon: '/stack_icons/postgres.png' }
-    ],
-    'Business Management': [
-      { name: 'Idealpos', icon: '/stack_icons/idealpos.png' },
-      { name: 'qPilot', icon: '/stack_icons/qpilot.png' }
-    ],
-    'Administration Tools': [
-      { name: 'Google Workspace', icon: '/stack_icons/google_workspace.png' },
-      { name: 'Jira', icon: '/stack_icons/jira.png' },
-      { name: 'Canva', icon: '/stack_icons/canva.gif' }
-    ],
-    'Service Management': [
-      { name: 'Track-POD', icon: '/stack_icons/trackpod.png' },
-      { name: 'Unifi', icon: '/stack_icons/unifi.png' }
-    ]
+  // Environment-based data URLs
+  const getDataUrl = (filename) => {
+    const isProduction = process.env.NODE_ENV === 'production' || window.location.hostname === 'tristanj.dev';
+    const baseUrl = isProduction 
+      ? 'https://tristanj.dev/cache-data'
+      : 'api_cache';
+    return `${baseUrl}/${filename}`;
   };
 
-  const techDetails = {
-    'Auth0': {
-      name: 'Auth0',
-      description: 'Identity and access management platform providing secure authentication and authorization services. Used for implementing single sign-on, multi-factor authentication, and user management across web and mobile applications.'
-    },
-    'Canva': {
-      name: 'Canva',
-      description: 'Online graphic design platform for creating visual content including presentations, social media graphics, and marketing materials. Utilized for designing professional business graphics and visual assets efficiently.'
-    },
-    'Cloudflare': {
-      name: 'Cloudflare',
-      description: 'Global CDN and web security platform providing DNS, DDoS protection, and performance optimization. Used to secure and accelerate website delivery with advanced caching and security features.'
-    },
-    'Digital Ocean': {
-      name: 'Digital Ocean',
-      description: 'Cloud infrastructure provider offering scalable virtual private servers and managed databases. Utilized for hosting applications and services with reliable performance and easy deployment options.'
-    },
-    'Electron': {
-      name: 'Electron',
-      description: 'Framework for building cross-platform desktop applications using web technologies. Enables development of native desktop apps with HTML, CSS, and JavaScript for Windows, macOS, and Linux.'
-    },
-    'Google Workspace': {
-      name: 'Google Workspace',
-      description: 'Cloud-based productivity and collaboration suite including Gmail, Drive, Docs, Sheets, and Meet. Used for business communication, document collaboration, and project management across teams.'
-    },
-    'Idealpos': {
-      name: 'Idealpos',
-      description: 'Point-of-sale system designed for retail businesses with inventory management and sales tracking. Implemented and maintained across multiple Pet Fresh locations for streamlined operations.'
-    },
-    'Jira': {
-      name: 'Jira',
-      description: 'Project management and issue tracking software for agile development teams. Used for organizing tasks, tracking progress, and managing software development workflows efficiently.'
-    },
-    'Material UI': {
-      name: 'Material UI',
-      description: 'React component library implementing Google\'s Material Design principles. Provides pre-built, customizable components for creating modern and consistent user interfaces quickly.'
-    },
-    'Postgresql': {
-      name: 'PostgreSQL',
-      description: 'Advanced open-source relational database system with strong ACID compliance and extensive features. Used for storing and managing complex business data with reliability and performance.'
-    },
-    'qPilot': {
-      name: 'qPilot',
-      description: 'QPilot (https://qpilot.com) is the Scheduled Commerce Engine™ that provides a hosted, enterprise-scale platform for "queueing up" any product for a future scheduled order. QPilot\'s unique method for scheduling orders (instead of managing billing plans) enables services that typically only work with a Cart (like Shipping Carrier Integrations and Order Management/ERP services) to integrate directly with an online seller\'s subscriber experience and repeat purchasing channel. Subscription apps that are powered by QPilot offer maximum flexibility to subscribers and a reliable platform that DTC and B2B brands use to configure and scale their repeat orders & delivery operations.'
-    },
-    'React': {
-      name: 'React',
-      description: 'JavaScript library for building interactive user interfaces with component-based architecture. Used for creating modern, responsive web applications with efficient state management and reusable components.'
-    },
-    'Track-POD': {
-      name: 'Track-POD',
-      description: 'Delivery tracking and proof-of-delivery management system for logistics operations. Integrated to provide real-time shipment tracking and delivery confirmation for customer orders.'
-    },
-    'Unifi': {
-      name: 'Unifi',
-      description: 'Network management platform by Ubiquiti for managing enterprise WiFi, switching, and security systems. Used for centralized network monitoring, configuration, and performance optimization across business locations.'
-    },
-    'WooCommerce': {
-      name: 'WooCommerce',
-      description: 'E-commerce plugin for WordPress enabling online store functionality with payment processing and inventory management. Utilized for building and maintaining online retail platforms with extensive customization options.'
-    },
-    'Wordpress': {
-      name: 'WordPress',
-      description: 'Content management system powering websites and blogs with extensive plugin ecosystem. Used for creating and managing business websites with custom themes and functionality for various client needs.'
+  // Cache utility functions
+  const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+  
+  const getCachedData = (key) => {
+    try {
+      const cached = localStorage.getItem(key);
+      if (!cached) return null;
+      
+      const { data, timestamp } = JSON.parse(cached);
+      const isExpired = Date.now() - timestamp > CACHE_DURATION;
+      
+      if (isExpired) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.warn(`Error reading cache for ${key}:`, error);
+      return null;
     }
   };
+  
+  const setCachedData = (key, data) => {
+    try {
+      const cacheItem = {
+        data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(key, JSON.stringify(cacheItem));
+    } catch (error) {
+      console.warn(`Error setting cache for ${key}:`, error);
+    }
+  };
+
+  // Load data from JSON file with caching
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Check for cached data first
+        const cachedTechnologies = getCachedData('stackSection_technologies');
+        
+        if (cachedTechnologies) {
+          console.log('Using cached data for StackSection');
+          setTechCategories(cachedTechnologies);
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Fetching fresh data for StackSection');
+        const response = await fetch(getDataUrl('technologies.json'));
+        const data = await response.json();
+        const result = data.result || [];
+        
+        // Cache the result
+        setCachedData('stackSection_technologies', result);
+        
+        setTechCategories(result);
+      } catch (error) {
+        console.error('Error loading technologies data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   // Utility function to convert hex to rgba
   const hexToRgba = (hex, alpha) => {
@@ -129,13 +112,25 @@ const StackSection = () => {
     }, 300);
   };
 
+  if (loading) {
+    return (
+      <section id="stack" className="content-section">
+        <div className="container">
+          <Typography variant="h4" style={{ color: '#e5e7eb', textAlign: 'center' }}>
+            Loading...
+          </Typography>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="stack" className="content-section">
       <div className="container">
         <h2 className="section-title">Tech Stack</h2>
         
-        {Object.entries(techCategories).map(([categoryName, technologies]) => (
-          <div key={categoryName} style={{ marginBottom: '3rem' }}>
+        {techCategories.map((category) => (
+          <div key={category.categoryName} style={{ marginBottom: '3rem' }}>
             <h3 
               style={{
                 color: theme.palette.secondary.main,
@@ -145,7 +140,7 @@ const StackSection = () => {
                 textAlign: 'center'
               }}
             >
-              {categoryName}
+              {category.categoryName}
             </h3>
             
             <div 
@@ -159,7 +154,7 @@ const StackSection = () => {
                 margin: '0 auto'
               }}
             >
-              {technologies.map(tech =>
+              {category.technologies && category.technologies.map(tech =>
                 <div
                   key={tech.name}
                   className="stack-item"
@@ -201,36 +196,51 @@ const StackSection = () => {
                     const textElement = e.currentTarget.querySelector('.stack-text');
                     if (textElement) {
                       textElement.style.opacity = '0';
-                      textElement.style.transform = 'translateX(-50%) translateY(8px)';
+                      textElement.style.transform = 'translateX(-50%) translateY(20px)';
                     }
                   }}
                 >
-                  <img
-                    src={tech.icon}
-                    alt={tech.name}
-                    style={{
-                      width: '100px',
-                      height: '58px',
-                      objectFit: 'contain'
-                    }}
-                  />
-                  <span
+                  {tech.logoUrl && (
+                    <img
+                      src={tech.logoUrl}
+                      alt={tech.name}
+                      style={{
+                        width: '64px',
+                        height: '64px',
+                        objectFit: 'contain',
+                        marginBottom: '0.75rem'
+                      }}
+                    />
+                  )}
+                  
+                  <h3 style={{
+                    margin: '0',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    color: '#e5e7eb'
+                  }}>
+                    {tech.name}
+                  </h3>
+
+                  {/* Hidden text that appears on hover */}
+                  <div
                     className="stack-text"
                     style={{
-                      fontSize: '0.85rem',
-                      fontWeight: '500',
-                      color: '#e5e7eb',
+                      position: 'absolute',
+                      bottom: '10px',
+                      left: '50%',
+                      transform: 'translateX(-50%) translateY(20px)',
                       opacity: '0',
                       transition: 'all 0.3s ease',
-                      position: 'absolute',
-                      bottom: '1rem',
-                      left: '50%',
-                      transform: 'translateX(-50%) translateY(8px)',
-                      whiteSpace: 'nowrap'
+                      fontSize: '0.75rem',
+                      color: theme.palette.primary.main,
+                      fontWeight: '500',
+                      textAlign: 'center',
+                      pointerEvents: 'none'
                     }}
                   >
-                    {tech.name}
-                  </span>
+                    Click for details
+                  </div>
                 </div>
               )}
             </div>
@@ -238,7 +248,7 @@ const StackSection = () => {
         ))}
       </div>
 
-      {/* Tech Details Modal */}
+      {/* Technology Details Modal */}
       <Dialog
         open={techModalOpen}
         onClose={handleTechModalClose}
@@ -262,18 +272,18 @@ const StackSection = () => {
             gap: '1rem'
           }}
         >
-          {selectedTech && (
+          {selectedTech && selectedTech.logoUrl && (
             <img
-              src={selectedTech.icon}
+              src={selectedTech.logoUrl}
               alt={selectedTech.name}
               style={{
                 width: '40px',
-                height: '24px',
+                height: '40px',
                 objectFit: 'contain'
               }}
             />
           )}
-          {selectedTech && techDetails[selectedTech.name]?.name}
+          {selectedTech && selectedTech.name}
           <IconButton
             aria-label="close"
             onClick={handleTechModalClose}
@@ -294,14 +304,26 @@ const StackSection = () => {
               variant="body1" 
               style={{ 
                 color: '#e5e7eb', 
-                lineHeight: '1.6',
-                fontSize: '1rem'
+                lineHeight: '1.6'
               }}
             >
-              {techDetails[selectedTech.name]?.description}
+              {selectedTech.description}
             </Typography>
           )}
         </DialogContent>
+        
+        <DialogActions style={{ padding: '1rem 1.5rem' }}>
+          <Button 
+            onClick={handleTechModalClose}
+            style={{
+              color: theme.palette.primary.main,
+              borderColor: theme.palette.primary.main
+            }}
+            variant="outlined"
+          >
+            Close
+          </Button>
+        </DialogActions>
       </Dialog>
     </section>
   );
